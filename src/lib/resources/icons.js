@@ -2,3 +2,8 @@ export Facebook from 'react-icons/lib/fa/facebook';
 export Twitter from 'react-icons/lib/fa/twitter';
 export Instagram from 'react-icons/lib/fa/instagram';
 export Linkedin from 'react-icons/lib/fa/linkedin';
+export Profile from 'material-ui/svg-icons/social/person'
+export Add from 'material-ui/svg-icons/content/add-circle-outline';
+export Logout from 'material-ui/svg-icons/action/exit-to-app'
+export Help from 'material-ui/svg-icons/action/help-outline'
+export Menu from 'material-ui/svg-icons/navigation/more-vert'

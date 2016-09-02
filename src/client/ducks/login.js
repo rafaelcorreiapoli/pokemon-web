@@ -1,9 +1,10 @@
 import { Map } from 'immutable'
-export const SET_LOGIN_EMAIL = 'SET_LOGIN_EMAIL';
-export const SET_LOGIN_PASSWORD = 'SET_LOGIN_PASSWORD';
-export const START_LOGIN = 'START_LOGIN';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGIN_ERROR = 'LOGIN_ERROR';
+export const SET_LOGIN_EMAIL = 'login/SET_LOGIN_EMAIL';
+export const SET_LOGIN_PASSWORD = 'login/SET_LOGIN_PASSWORD';
+export const START_LOGIN = 'login/START_LOGIN';
+export const LOGIN_SUCCESS = 'login/LOGIN_SUCCESS';
+export const LOGIN_ERROR = 'login/LOGIN_ERROR';
+export const LOGOUT_REQUEST = 'login/LOGOUT_REQUEST'
 
 export function startLogin() {
   return {
@@ -72,6 +73,17 @@ export const loginWithPassword = (email, password) => (dispatch, getState, Meteo
   ))
 }
 
+export const logout = () => (dispatch, getState, Meteor) => (
+  new Promise((resolve, reject) => {
+    dispatch({
+      type: LOGOUT_REQUEST,
+    })
+    Meteor.logout((err, res) => {
+      if (err) return reject(err)
+      resolve(res)
+    })
+  })
+)
 
 export function setLoginEmail(email) {
   return {
@@ -102,6 +114,8 @@ const initialState = Map({
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case LOGOUT_REQUEST:
+      return state.set('logoutRequest', true)
     case SET_LOGIN_EMAIL:
       const email = action.payload.email;
       return state.set('email', email);
