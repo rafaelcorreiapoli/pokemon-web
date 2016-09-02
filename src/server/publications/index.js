@@ -1,0 +1,6 @@
+import './bots'
+import './eggs'
+import './encounters'
+import './gyms'
+import './pokemons'
+import './pokestops'
