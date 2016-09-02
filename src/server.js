@@ -4,7 +4,7 @@ import './server/publications'
 import './lib/methods'
 import './server/methods'
 import './server/BotService'
-
+import './server/config/services'
 Meteor.startup(() => {
 
 })

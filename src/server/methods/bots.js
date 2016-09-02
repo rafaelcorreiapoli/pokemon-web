@@ -17,14 +17,14 @@ const BOT_STATUS_PATROLLING = 3;
 const BOT_STATUS_ERROR = 4;
 
 console.log('registering methods')
-const botServiceSyncCall = Meteor.wrapAsync(BotService.call)
+const botServiceSyncCall = Meteor.wrapAsync(BotService.call, BotService)
 
 Meteor.methods({
   'bots.registerBot'({ email, password, nickname, coords, proxy }) {
     check(email, String)
     check(nickname, String)
     check(password, String)
-    check(proxy, Match.isOptional(String))
+    check(proxy, Match.Optional(String))
     console.log(`Registering new bot: ${email} / ${password} at
       [ ${coords.latitude}, ${coords.longitude} ]`)
     return Bots.insert({
@@ -133,6 +133,7 @@ Meteor.methods({
           'pokemonGoProfile.candies': candies,
         },
       })
+      console.log(pokemons)
       pokemons.forEach(pokemon => {
         Pokemons.upsert({
           _id: pokemon.pokemonIdNumber,
@@ -288,24 +289,23 @@ Meteor.methods({
   'bots.login'({ botId }) {
     check(botId, String)
     const bot = Bots.findOne(botId)
+    if (!bot) throw new Meteor.Error('bot-not-found')
     const { email, password, coords } = bot;
 
     try {
-      const apiToken = botServiceSyncCall('login', {
-        email: 'poke.zumbi.001@gmail.com',
-        password: 'POLIq1w2e3$',
-        coords: {
-          latitude: 10,
-          longitude: 20,
-        },
+      const token = botServiceSyncCall('login', {
+        email,
+        password,
+        coords,
       })
       Bots.update(botId, {
         $set: {
-          apiToken,
+          token,
         },
       })
-      return apiToken
+      return token
     } catch (error) {
+      console.log(error)
       throw new Meteor.Error(error)
     }
   },

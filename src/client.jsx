@@ -1,8 +1,12 @@
 // src/client.jsx
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
 import ReactDOM from 'react-dom';
 import Root from 'client/components/Root';
 import React from 'react';
 import 'lib/methods'
+import '@collections/pokemons'
+import 'client/config/accounts'
 Meteor.startup(() => {
   Package['msavin:mongol'].Mongol.showCollection('eggs')
   Package['msavin:mongol'].Mongol.showCollection('pokemons')

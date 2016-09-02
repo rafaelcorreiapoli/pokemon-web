@@ -5,6 +5,7 @@ import counter from '@ducks/counter'
 import eggs from '@ducks/eggs'
 import methods from '@ducks/methods'
 import game from '@ducks/game'
+import login from '@ducks/login'
 
 const rootReducer = combineReducers({
   form: formReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   methods,
   counter,
   eggs,
-  game
+  game,
+  login,
 });
 
 export default rootReducer
