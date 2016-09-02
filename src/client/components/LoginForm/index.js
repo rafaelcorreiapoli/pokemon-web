@@ -29,6 +29,7 @@ class LoginForm extends React.Component {
   }
 
   render() {
+    console.log(this.props)
     const {
       email,
       password,
@@ -42,6 +43,7 @@ class LoginForm extends React.Component {
       onClickRecuperarSenha,
       onLoginWithFacebook,
       onLoginWithLinkedin,
+      redirect,
       ...props,
     } = this.props
 

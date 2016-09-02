@@ -8,9 +8,7 @@ import AuthenticatedLayout from '@components/AuthenticatedLayout'
 class Welcome extends React.Component {
   render() {
     return (
-      <AuthenticatedLayout>
-        <PokeMap />
-      </AuthenticatedLayout>
+      <PokeMap />
     )
   }
 }

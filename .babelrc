@@ -13,6 +13,7 @@
         "@ducks": "client/ducks",
         "@components": "client/components",
         "@containers": "client/containers",
+        "@pages": "client/pages",
         "@helpers": "client/helpers",
         "@selectors": "client/selectors",
         "@config": "client/config"

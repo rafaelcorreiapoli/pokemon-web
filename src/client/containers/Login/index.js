@@ -10,7 +10,7 @@ import LoginForm from '@components/LoginForm'
 import { push } from 'react-router-redux';
 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
     email: state.login.get('email'),
     password: state.login.get('password'),
@@ -39,12 +39,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     // },
     onLoginWithFacebook() {
       dispatch(loginWithFacebook())
-      .then(res => {
-        console.log(res)
-        dispatch(push('/'))
+      .then(() => {
+        const { redirect } = ownProps
+        dispatch(push(redirect))
       })
-      .catch (err => {
-
+      .catch (() => {
+        console.log('error?', err)
       })
     },
     // onLoginWithLinkedin() {

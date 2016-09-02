@@ -5,6 +5,7 @@ export const START_LOGIN = 'login/START_LOGIN';
 export const LOGIN_SUCCESS = 'login/LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'login/LOGIN_ERROR';
 export const LOGOUT_REQUEST = 'login/LOGOUT_REQUEST'
+export const CLEAR_LOGOUT_REQUEST = 'login/CLEAR_LOGOUT_REQUEST'
 
 export function startLogin() {
   return {
@@ -104,16 +105,31 @@ export function setLoginPassword(password) {
   }
 }
 
+export const logoutRequest = () => (dispatch, getState, asteroid) => {
+  dispatch({
+    type: LOGOUT_REQUEST
+  })
+  asteroid.logout()
+}
+
+export const clearLogoutRequest = () => {
+  return {
+    type: CLEAR_LOGOUT_REQUEST
+  }
+}
 const initialState = Map({
   email: '',
   password: '',
   loading: false,
   error: false,
   success: false,
+  logoutRequest: false,
 })
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case CLEAR_LOGOUT_REQUEST:
+      return state.set('logoutRequest', false)
     case LOGOUT_REQUEST:
       return state.set('logoutRequest', true)
     case SET_LOGIN_EMAIL:

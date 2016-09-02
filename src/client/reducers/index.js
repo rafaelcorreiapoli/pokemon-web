@@ -7,6 +7,7 @@ import methods from '@ducks/methods'
 import game from '@ducks/game'
 import login from '@ducks/login'
 import layout from '@ducks/layout'
+import user from '@ducks/user'
 
 const rootReducer = combineReducers({
   form: formReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   game,
   login,
   layout,
+  user,
 });
 
 export default rootReducer
