@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch, ownProps = {}) => {
   return {
     onChangeEmail(email) {
       dispatch(setLoginEmail(email));
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onLoginWithFacebook() {
       dispatch(loginWithFacebook())
       .then(() => {
-        const { redirect } = ownProps
+        const { redirect = '/' } = ownProps
         dispatch(push(redirect))
       })
       .catch (() => {

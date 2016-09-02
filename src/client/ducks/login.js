@@ -6,7 +6,14 @@ export const LOGIN_SUCCESS = 'login/LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'login/LOGIN_ERROR';
 export const LOGOUT_REQUEST = 'login/LOGOUT_REQUEST'
 export const CLEAR_LOGOUT_REQUEST = 'login/CLEAR_LOGOUT_REQUEST'
-
+export const SET_METEOR_USER_FETCHED = 'login/SET_METEOR_USER_FETCHED'
+import { SET_USER } from './user'
+export const setMeteorUserFetched = (fetched) => ({
+  type: SET_METEOR_USER_FETCHED,
+  payload: {
+    fetched,
+  },
+})
 export function startLogin() {
   return {
     type: START_LOGIN,
@@ -124,10 +131,13 @@ const initialState = Map({
   error: false,
   success: false,
   logoutRequest: false,
+  isMeteorUserFetched: false,
 })
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case SET_USER:
+      return state.set('isMeteorUserFetched', true)
     case CLEAR_LOGOUT_REQUEST:
       return state.set('logoutRequest', false)
     case LOGOUT_REQUEST:
@@ -141,7 +151,8 @@ export default (state = initialState, action) => {
     case START_LOGIN:
       return state.set('loading', true)
         .set('success', false)
-        .set('error', false);
+        .set('error', false)
+        .set('isMeteorUserFetched', false)
     case LOGIN_SUCCESS:
       return state.merge({
         loading: false,

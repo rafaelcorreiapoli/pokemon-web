@@ -8,6 +8,7 @@ import Welcome from '@pages/Welcome'
 import LoginScreen from '@pages/LoginScreen'
 import { UserAuthWrapper } from 'redux-auth-wrapper'
 import { clearLogoutRequest } from '@ducks/login'
+import { Meteor } from 'meteor/meteor'
 
 const Loading = ({
   children
@@ -22,7 +23,7 @@ const Loading = ({
 const userIsAuthenticated = UserAuthWrapper({
   wrapperDisplayName: 'UserIsAuthenticated',
   authSelector: state => state.user,
-  authenticatingSelector: state => state.login.get('loading'),
+  authenticatingSelector: state => !state.login.get('isMeteorUserFetched'),
   LoadingComponent: Loading,
   redirectAction: newLoc => (dispatch, getState) => {
     //  se o usuário clicou no botão de logout, vou mandá-lo para a tela de login sem o redirect
