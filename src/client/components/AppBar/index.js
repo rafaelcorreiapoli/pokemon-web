@@ -11,7 +11,7 @@ import { Menu, Add, Logout, Help, Profile } from '@resources/icons'
 class AppBar extends React.Component {
   static propTypes = {
     onClickToggleMenu: PropTypes.func,
-    onClickNewPatrolman: PropTypes.func,
+    onClickAdd: PropTypes.func,
     onClickProfileLink: PropTypes.func,
     onClickHelpLink: PropTypes.func,
     onClickLogoutLink: PropTypes.func,
@@ -19,7 +19,7 @@ class AppBar extends React.Component {
   render() {
     const {
       onClickToggleMenu,
-      onClickNewPatrolman,
+      onClickAdd,
       onClickProfileLink,
       onClickHelpLink,
       onClickLogoutLink,
@@ -49,7 +49,7 @@ class AppBar extends React.Component {
             <MenuItem
               leftIcon={<Add />}
               primaryText="New Patrolman"
-              onClick={onClickNewPatrolman}
+              onClick={onClickAdd}
             />
             <MenuItem
               leftIcon={<Help />}

@@ -16,7 +16,8 @@
         "@pages": "client/pages",
         "@helpers": "client/helpers",
         "@selectors": "client/selectors",
-        "@config": "client/config"
+        "@config": "client/config",
+        "@utils": "client/utils"
       }
     }]
   ]

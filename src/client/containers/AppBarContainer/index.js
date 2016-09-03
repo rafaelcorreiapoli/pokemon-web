@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux';
-import { setDrawerOpen } from '@ducks/layout'
+import { setDrawerOpen, setInsertBotDialogOpen } from '@ducks/layout'
 import { logout } from '@ducks/login'
 import AppBar from '@components/AppBar'
 
@@ -19,8 +19,9 @@ const mapDispatchToProps = (dispatch) => {
     onClickProfileLink() {
       dispatch(push('/profile'))
     },
-    onClickAddLink() {
-      dispatch(push('/novo-projeto'))
+    onClickAdd() {
+      console.log('add')
+      dispatch(setInsertBotDialogOpen(true))
     },
     onClickHelpLink() {
       dispatch(push('/help'))

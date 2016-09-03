@@ -43,7 +43,7 @@ const mapDispatchToProps = (dispatch, ownProps = {}) => {
         const { redirect = '/' } = ownProps
         dispatch(push(redirect))
       })
-      .catch (() => {
+      .catch (err => {
         console.log('error?', err)
       })
     },

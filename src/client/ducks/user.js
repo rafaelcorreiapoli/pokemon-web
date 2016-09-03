@@ -12,7 +12,7 @@ const initialState = {}
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_USER:
-      return action.payload.user
+      return Object.assign({}, action.payload.user)
     default:
       return state
   }

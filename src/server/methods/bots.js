@@ -16,17 +16,30 @@ const BOT_STATUS_LOGGED_IN = 2;
 const BOT_STATUS_PATROLLING = 3;
 const BOT_STATUS_ERROR = 4;
 
+const validateBot = (botId, userId) => {
+  check(botId, String)
+  const bot = Bots.findOne(botId)
+  if (bot.userId !== userId) throw new Meteor.Error('not-bot-owner')
+  return bot.token
+}
+const checkIsLoggedIn = () => {
+  const userId = Meteor.userId()
+  if (userId) {
+    return userId
+  }
+  throw new Meteor.Error('not-authorized')
+}
 console.log('registering methods')
 const botServiceSyncCall = Meteor.wrapAsync(BotService.call, BotService)
 
 Meteor.methods({
   'bots.registerBot'({ email, password, nickname, coords, proxy }) {
+    const userId = checkIsLoggedIn()
     check(email, String)
     check(nickname, String)
     check(password, String)
     check(proxy, Match.Optional(String))
-    console.log(`Registering new bot: ${email} / ${password} at
-      [ ${coords.latitude}, ${coords.longitude} ]`)
+
     return Bots.insert({
       loggedIn: false,
       status: BOT_STATUS_IDLE,
@@ -34,14 +47,13 @@ Meteor.methods({
       email,
       nickname,
       password,
+      userId,
     })
   },
   'bots.encounterPokemon'({ botId, encounterIdNumber }) {
-    check(botId, String)
     check(encounterIdNumber, String)
-
-    const bot = Bots.findOne(botId)
-    const { token } = bot
+    const userId = checkIsLoggedIn()
+    const token = validateBot(botId, userId)
     const encounter = Encounters.findOne(encounterIdNumber)
     const { encounterId, spawnPointId } = encounter
 
@@ -67,12 +79,12 @@ Meteor.methods({
     }
   },
   'bots.catchPokemon'({ botId, encounterIdNumber }) {
-    check(botId, String)
     check(encounterIdNumber, String)
+    const userId = checkIsLoggedIn()
+    const token = validateBot(botId, userId)
+
     const encounter = Encounters.findOne(encounterIdNumber)
     const { encounterId, spawnPointId } = encounter
-    const bot = Bots.findOne(botId)
-    const { token } = bot
 
     try {
       const catchPokemon = botServiceSyncCall('catchPokemon', {
@@ -108,9 +120,8 @@ Meteor.methods({
     }
   },
   'bots.refreshInventory'({ botId }) {
-    check(botId, String)
-    const bot = Bots.findOne(botId)
-    const { token } = bot
+    const userId = checkIsLoggedIn()
+    const token = validateBot(botId, userId)
 
     try {
       const inventory = botServiceSyncCall('fetchInventory', {
@@ -163,10 +174,10 @@ Meteor.methods({
   },
   'bots.evolvePokemon'({ botId, pokemonId }) {
     //  TODO: Solve integer 64 issues
-    check(botId, String)
     check(pokemonId, String)
-    const bot = Bots.findOne(botId)
-    const { token } = bot
+
+    const userId = checkIsLoggedIn()
+    const token = validateBot(botId, userId)
 
     try {
       const evolvePokemon = botServiceSyncCall('evolvePokemon', {
@@ -180,11 +191,11 @@ Meteor.methods({
     }
   },
   'bots.dropItem'({ botId, itemId, count }) {
-    check(botId, String)
     check(itemId, Number)
     check(count, Number)
-    const bot = Bots.findOne(botId)
-    const { token } = bot
+
+    const userId = checkIsLoggedIn()
+    const token = validateBot(botId, userId)
 
     try {
       const dropItem = botServiceSyncCall('transferPokemon', {
@@ -199,12 +210,13 @@ Meteor.methods({
     }
   },
   'bots.transferPokemon'({ botId, pokemonIdNumber }) {
-    check(botId, String)
     check(pokemonIdNumber, String)
+
+    const userId = checkIsLoggedIn()
+    const token = validateBot(botId, userId)
+
     const pokemon = Pokemons.findOne(pokemonIdNumber)
     const { pokemonId } = pokemon
-    const bot = Bots.findOne(botId)
-    const { token } = bot
     try {
       const transferPokemon = botServiceSyncCall('transferPokemon', {
         token,
@@ -217,11 +229,10 @@ Meteor.methods({
     }
   },
   'bots.getPokestop'({ botId, pokestopId }) {
-    check(botId, String)
     check(pokestopId, String)
 
-    const bot = Bots.findOne(botId)
-    const { token } = bot
+    const userId = checkIsLoggedIn()
+    const token = validateBot(botId, userId)
     const pokestop = Pokestops.findOne(pokestopId)
     const { latitude, longitude } = pokestop
     try {
@@ -238,11 +249,10 @@ Meteor.methods({
     }
   },
   'bots.setPosition'({ botId, latitude, longitude }) {
-    check(botId, String)
     check(latitude, Number)
     check(longitude, Number)
-    const bot = Bots.findOne(botId)
-    const { token } = bot
+    const userId = checkIsLoggedIn()
+    const token = validateBot(botId, userId)
 
     //  TODO: Optimistic UI
     try {
@@ -265,9 +275,8 @@ Meteor.methods({
     }
   },
   'bots.refreshProfile'({ botId }) {
-    check(botId, String)
-    const bot = Bots.findOne(botId)
-    const { token } = bot
+    const userId = checkIsLoggedIn()
+    const token = validateBot(botId, userId)
 
     try {
       const profile = botServiceSyncCall('fetchProfile', { token })
@@ -287,9 +296,12 @@ Meteor.methods({
     }
   },
   'bots.login'({ botId }) {
-    check(botId, String)
+    const userId = checkIsLoggedIn()
+
     const bot = Bots.findOne(botId)
     if (!bot) throw new Meteor.Error('bot-not-found')
+    if (bot.userId !== userId) throw new Meteor.Error('not-bot-owner')
+
     const { email, password, coords } = bot;
 
     try {
@@ -305,7 +317,6 @@ Meteor.methods({
       })
       return token
     } catch (error) {
-      console.log(error)
       throw new Meteor.Error(error)
     }
   },

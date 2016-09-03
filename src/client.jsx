@@ -8,10 +8,6 @@ import 'lib/methods'
 import '@collections/pokemons'
 import 'client/config/accounts'
 
-import { Accounts } from 'meteor/accounts-base'
-Accounts.onLogin(function (info) {
-  console.log('infos', info)
-});
 Meteor.startup(() => {
   Package['msavin:mongol'].Mongol.showCollection('eggs')
   Package['msavin:mongol'].Mongol.showCollection('pokemons')
