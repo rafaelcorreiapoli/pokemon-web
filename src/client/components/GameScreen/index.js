@@ -34,15 +34,15 @@ class GameScreen extends React.Component {
             <Tab label={`Pokemons (${pokemonsCount}/${pokemonsMaxCount})`} value="pokemons">
               <PokemonsListContainer selectedBotId={selectedBot._id} />
             </Tab>
-            <Tab label="Eggs" value="eggs">
-              {/* <EggsListContainer botId={selectedBot} /> */}
-            </Tab>
+            {/* <Tab label="Eggs" value="eggs">
+              <EggsListContainer botId={selectedBot} />
+            </Tab> */}
             <Tab label="Inventory" value="items">
-              {/* <ItemsListContainer /> */}
+              <ItemsListContainer />
             </Tab>
-            <Tab label="Profile" value="profile">
-              {/* <ProfileContainer /> */}
-            </Tab>
+            {/* <Tab label="Profile" value="profile">
+              <ProfileContainer />
+            </Tab> */}
           </Tabs>
         )
       }

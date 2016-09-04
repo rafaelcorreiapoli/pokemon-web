@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { ListItem } from 'material-ui/List'
 import Avatar from 'material-ui/Avatar';
-import itemsById from '../../../lib/items'
+import itemsById from '@resources/items'
 
 const ItemsListItem = ({
   itemId,

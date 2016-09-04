@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import pokemonsById from '@resources/pokemons'
+import itemsById from '@resources/items'
 import Bot from '@components/Bot'
 import GoogleMap from 'google-map-react';
 import keydown, { Keys } from 'react-keydown';
@@ -130,15 +131,344 @@ const mapStyle = [
     ],
   },
 ]
-
+const mapStyle2 = [
+  {
+    'featureType': 'all',
+    'elementType': 'geometry',
+    'stylers': [
+      {
+        'color': '#c1fcb8',
+      },
+      {
+        'weight': '1.00',
+      },
+    ],
+  },
+  {
+    'featureType': 'all',
+    'elementType': 'labels',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'all',
+    'elementType': 'labels.text.fill',
+    'stylers': [
+      {
+        'gamma': 0.01,
+      },
+      {
+        'lightness': 20,
+      },
+    ],
+  },
+  {
+    'featureType': 'all',
+    'elementType': 'labels.text.stroke',
+    'stylers': [
+      {
+        'saturation': -31,
+      },
+      {
+        'lightness': -33,
+      },
+      {
+        'weight': 2,
+      },
+      {
+        'gamma': 0.8,
+      },
+    ],
+  },
+  {
+    'featureType': 'all',
+    'elementType': 'labels.icon',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'administrative',
+    'elementType': 'geometry',
+    'stylers': [
+      {
+        'hue': '#ff0000',
+      },
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'administrative',
+    'elementType': 'labels',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'landscape',
+    'elementType': 'labels',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'poi',
+    'elementType': 'all',
+    'stylers': [
+      {
+        'color': '#e0ffd3',
+      },
+    ],
+  },
+  {
+    'featureType': 'poi',
+    'elementType': 'geometry',
+    'stylers': [
+      {
+        'saturation': 20,
+      },
+    ],
+  },
+  {
+    'featureType': 'poi.park',
+    'elementType': 'geometry',
+    'stylers': [
+      {
+        'lightness': 20,
+      },
+      {
+        'saturation': -20,
+      },
+    ],
+  },
+  {
+    'featureType': 'poi.park',
+    'elementType': 'geometry.fill',
+    'stylers': [
+      {
+        'visibility': 'on',
+      },
+      {
+        'color': '#41ff82',
+      },
+    ],
+  },
+  {
+    'featureType': 'road',
+    'elementType': 'all',
+    'stylers': [
+      {
+        'weight': '2.00',
+      },
+    ],
+  },
+  {
+    'featureType': 'road',
+    'elementType': 'geometry',
+    'stylers': [
+      {
+        'lightness': '-20',
+      },
+      {
+        'saturation': '-67',
+      },
+      {
+        'gamma': '1.32',
+      },
+      {
+        'color': '#57aa9f',
+      },
+      {
+        'weight': '2.00',
+      },
+      {
+        'visibility': 'simplified',
+      },
+    ],
+  },
+  {
+    'featureType': 'road',
+    'elementType': 'geometry.fill',
+    'stylers': [
+      {
+        'visibility': 'on',
+      },
+      {
+        'weight': '2.00',
+      },
+    ],
+  },
+  {
+    'featureType': 'road',
+    'elementType': 'geometry.stroke',
+    'stylers': [
+      {
+        'saturation': 25,
+      },
+      {
+        'lightness': 25,
+      },
+      {
+        'weight': '1.00',
+      },
+      {
+        'color': '#f1ff8a',
+      },
+      {
+        'visibility': 'on',
+      },
+    ],
+  },
+  {
+    'featureType': 'road',
+    'elementType': 'labels',
+    'stylers': [
+      {
+        'weight': '2.12',
+      },
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'road.highway',
+    'elementType': 'geometry.fill',
+    'stylers': [
+      {
+        'visibility': 'on',
+      },
+      {
+        'color': '#4c98a8',
+      },
+    ],
+  },
+  {
+    'featureType': 'road.highway',
+    'elementType': 'labels',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'road.arterial',
+    'elementType': 'geometry.fill',
+    'stylers': [
+      {
+        'color': '#4c98a8',
+      },
+      {
+        'weight': '2.63',
+      },
+    ],
+  },
+  {
+    'featureType': 'road.arterial',
+    'elementType': 'geometry.stroke',
+    'stylers': [
+      {
+        'color': '#f1ff8a',
+      },
+    ],
+  },
+  {
+    'featureType': 'transit',
+    'elementType': 'all',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'transit',
+    'elementType': 'geometry',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'transit',
+    'elementType': 'labels',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'transit.line',
+    'elementType': 'all',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'transit.station',
+    'elementType': 'all',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+  {
+    'featureType': 'water',
+    'elementType': 'all',
+    'stylers': [
+      {
+        'lightness': -20,
+      },
+      {
+        'color': '#1b89d9',
+      },
+    ],
+  },
+  {
+    'featureType': 'water',
+    'elementType': 'geometry.fill',
+    'stylers': [
+      {
+        'color': '#1b87d9',
+      },
+    ],
+  },
+  {
+    'featureType': 'water',
+    'elementType': 'labels',
+    'stylers': [
+      {
+        'visibility': 'off',
+      },
+    ],
+  },
+]
 
 class MapElement extends React.Component {
   render() {
-    const { src, style, width, height } = this.props
+    const { src, style, width, height, onClick } = this.props
     const customStyle = mapStyleBuilder(width, height)
     const mergedStyles = Object.assign({}, style, customStyle)
     return (
       <img
+        onClick={onClick}
         style={mergedStyles}
         src={src}
       />
@@ -154,7 +484,7 @@ class EncounterMap extends React.Component {
     onClick: PropTypes.func.isRequired,
   }
   static defaultProps = {
-    expirationDate: moment()
+    expirationDate: moment(),
   }
   constructor(props) {
     super(props)
@@ -183,12 +513,23 @@ class EncounterMap extends React.Component {
 
     const containerStyle = loaded ? mapStyleBuilder(width, height) : {}
 
-    const mergedStyles = Object.assign({display: 'flex', flexDirection: 'column', alignItems: 'center'}, containerStyle, style)
+    const mergedStyles = Object.assign({ display: 'flex', flexDirection: 'column', alignItems: 'center' }, containerStyle, style)
     return (
       <div style={mergedStyles}>
-        <span style={{backgroundColor: 'rgba(0,0,0,0.7)', color: 'white', padding: '2px 6px 2px 6px', textAlign: 'center', borderRadius: 8}}>
-          {moment(moment(expirationDate).diff(moment())).format('mm:ss')}
-        </span>
+        {
+          (moment(expirationDate) > moment()) ?
+          (
+          <span style={{ backgroundColor: 'rgba(0,0,0,0.7)', color: 'white', padding: '2px 6px 2px 6px', textAlign: 'center', borderRadius: 8 }}>
+            {moment(moment(expirationDate).diff(moment())).format('mm:ss')}
+          </span>
+          )
+          : (
+          <span style={{ backgroundColor: 'rgba(255,0,0,0.7)', color: 'white', padding: '2px 6px 2px 6px', textAlign: 'center', borderRadius: 8 }}>
+            -
+          </span>
+          )
+        }
+
         <img
           style={imgStyle}
           src={pokemonsById[pokemonId].encounterImg}
@@ -286,26 +627,41 @@ class PokeMap extends React.Component {
       currentEncounterCP,
       onClickRun,
       onClickCatch,
+      itemsAwardedDisplay
     } = this.props
     const rotateAngle = selectedBot ? selectedBot.angle : 0
     const mapCenterCoords = selectedBot
       ? { lat: selectedBot.coords.latitude, lng: selectedBot.coords.longitude }
       : { lat: -23.632697, lng: -46.713803 }
     return (
-      <div style={{ width: 800, height: 800, overflow: 'hidden'}}>
+      <div style={{ width: 800, height: 800, overflow: 'hidden' }}>
         <img
           src="http://i537.photobucket.com/albums/ff339/lomastulx/6Actor_5.png"
           ref="botAsset"
           onLoad={this.handleLoad}
           style={{ display: 'none' }}
         />
-        <div style={{ position: 'relative', width: '100%', height: '100%'}}>
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+          <div style={{display: 'flex', zIndex: 9999, position: 'absolute', top: 0, left: 0, right: 0, height: 50}}>
+            {
+              itemsAwardedDisplay.entrySeq().map(([key, items]) => (
+                items.map(item => (
+                  <div style={{backgroundColor: 'rgba(255, 255, 255, 0.7)'}}>
+                    <img
+                      src={itemsById[item].img}
+                      style={{width: 50, height: 50}}
+                    />
+                  </div>
+                ))
+              ))
+            }
+          </div>
           <GoogleMap
             disableDefaultUI
             center={mapCenterCoords}
             zoom={16}
             options={{
-              styles: mapStyle,
+              styles: mapStyle2,
               heading: 10,
               keyboardShortcuts: false,
             }}
@@ -374,14 +730,16 @@ class PokeMap extends React.Component {
                   height={POKEBALL_MAP_HEIGHT}
                   src={POKEBALL_IMG}
                   {...commonKeys}
-                  style={{ transform: `rotate(-${rotateAngle}deg)` }} />
+                  style={{ transform: `rotate(-${rotateAngle}deg)` }}
+                />
               } else if (fleedEncounters.indexOf(encounter._id) !== -1) {
                 return <MapElement
                   width={FLEE_MAP_WIDTH}
                   height={FLEE_MAP_HEIGHT}
                   src={FLEE_IMG}
                   {...commonKeys}
-                  style={{ transform: `rotate(-${rotateAngle}deg)` }} />
+                  style={{ transform: `rotate(-${rotateAngle}deg)` }}
+                />
               } else {
                 return (
                   <EncounterMap

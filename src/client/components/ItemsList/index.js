@@ -12,10 +12,10 @@ const ItemsList = ({
        containerHeight={752}
       >
       {
-        items && items.entrySeq().map(([key, item]) => (
+        items && items.map((item, key) => (
           <ItemsListItem
             key={key}
-            {...item.toObject()}
+            {...item}
           />
         ))
       }

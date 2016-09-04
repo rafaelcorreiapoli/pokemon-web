@@ -8,7 +8,9 @@ class PokemonsList extends React.Component {
 
   render() {
     const {
-      pokemons
+      pokemons,
+      selectedBot,
+      onClickTransfer
     } = this.props
 
     return (
@@ -21,6 +23,7 @@ class PokemonsList extends React.Component {
           pokemons && pokemons.map(pokemon => {
             return (
               <PokemonsListItem
+                onClickTransfer={() => onClickTransfer(pokemon._id)}
                 key={pokemon._id}
                 {...pokemon}
               />

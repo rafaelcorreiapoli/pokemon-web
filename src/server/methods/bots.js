@@ -298,9 +298,14 @@ Meteor.methods({
         token,
         pokemonId,
       })
-
+      if (transferPokemon.Status === 1) {
+        Pokemons.remove({
+          _id: pokemonIdNumber
+        })
+      }
       return transferPokemon
     } catch (error) {
+      console.log(error)
       throw new Meteor.Error(error.reason)
     }
   },
@@ -321,6 +326,7 @@ Meteor.methods({
 
       return getPokestop
     } catch (error) {
+      console.log(error)
       throw new Meteor.Error(error.reason)
     }
   },

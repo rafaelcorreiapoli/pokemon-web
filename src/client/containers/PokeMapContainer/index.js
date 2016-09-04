@@ -56,7 +56,7 @@ const composer = (props, onData) => {
 
 const mapStateToProps = (state) => {
   return {
-
+    itemsAwardedDisplay: state.game.get('itemsAwardedDisplay')
   }
 }
 
@@ -83,6 +83,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(selectBot(botId))
   },
   onPokestopClick(botId, pokestopId) {
+    console.log(botId, pokestopId)
     dispatch(getPokestop(botId, pokestopId))
   },
   onClickCatch(botId, encounterId) {
