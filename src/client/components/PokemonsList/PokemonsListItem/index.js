@@ -65,7 +65,7 @@ class PokemonListItem extends React.Component {
             style={{ borderRadius: 0, backgroundColor: 'transparent', height: 'auto', maxWidth: 50, maxHeight: 50}}
           />
         }
-        secondaryText={`CPsss: ${cp}`}
+        secondaryText={<span>CP: {<b>{cp}</b>}</span>}
         rightIconButton={transferButton}
       />
     )

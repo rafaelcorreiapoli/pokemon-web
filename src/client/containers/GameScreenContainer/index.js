@@ -16,7 +16,7 @@ const composer = (props, onData) => {
 
     let pokemonsCount
     let pokemonsMaxCount
-    if (selectedBot) {
+    if (selectedBot && selectedBot.pokemonGoProfile) {
       pokemonsCount = Pokemons.find({
         botId: selectedBot._id
       }).count()

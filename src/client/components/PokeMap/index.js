@@ -661,7 +661,7 @@ class PokeMap extends React.Component {
             center={mapCenterCoords}
             zoom={16}
             options={{
-              styles: mapStyle2,
+              styles: mapStyle,
               heading: 10,
               keyboardShortcuts: false,
             }}
@@ -706,7 +706,7 @@ class PokeMap extends React.Component {
               }
               return null
             })}
-            {pokestops && pokestops.map((pokestop, key) => (
+            {pokestops && pokestops.slice(pokestops.length - 100, pokestops.length - 1).map((pokestop, key) => (
               <MapElement
                 width={POKESTOP_MAP_WIDTH}
                 height={POKESTOP_MAP_HEIGHT}

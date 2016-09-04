@@ -61,7 +61,7 @@ class AppBar extends React.Component {
             <Divider />
             <MenuItem
               leftIcon={<Add />}
-              primaryText="New Patrolman"
+              primaryText="New Trainer"
               onClick={onClickAdd}
             />
             <MenuItem

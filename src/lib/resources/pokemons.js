@@ -1520,6 +1520,7 @@ Object.keys(original).map(id => {
     .replace('♀', 'f')
     .replace('♂', 'm')
     .replace(' ', '-')
+    .replace('.', '-')
   const nameSemTraco = name.replace('-', '')
   final[id] = {
     ...pok,

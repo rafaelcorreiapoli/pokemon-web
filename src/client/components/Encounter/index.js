@@ -86,7 +86,7 @@ class Encounter extends React.Component {
         return (
           <img
             src="http://vignette1.wikia.nocookie.net/thelorienlegacies/images/2/2c/4129-pokemon-pokeball.png/revision/latest?cb=20140822201518"
-            style={{ width: 200, height: 200 }}
+            style={{ width: 150, height: 150 }}
           />
         )
       }
@@ -94,7 +94,7 @@ class Encounter extends React.Component {
         return (
           <img
             src="http://vignette3.wikia.nocookie.net/roblox/images/c/c6/Smoke.png/revision/latest?cb=20091213220753"
-            style={{ width: 200, height: 200 }}
+            style={{ width: 150, height: 150 }}
           />
         )
       }
@@ -104,6 +104,7 @@ class Encounter extends React.Component {
       <Paper style={mergedStyles}>
         {drawTitle()}
         {drawMainImage()}
+        <div style={styles.actionRow}>
         {
           catched || fleed
           ? <RaisedButton
@@ -111,7 +112,8 @@ class Encounter extends React.Component {
             label={'CLOSE'}
             onClick={onClickRun}
           />
-          : <div style={styles.actionRow}>
+          :
+            <div>
             <FlatButton style={styles.button} onClick={onClickCatch}>
               <img
                 style={styles.pokeballImg}
@@ -124,8 +126,9 @@ class Encounter extends React.Component {
                 src="https://camo.githubusercontent.com/642cce8f6da1c3b2c7903313957c5a0e40430e17/68747470733a2f2f63646e322e69636f6e66696e6465722e636f6d2f646174612f69636f6e732f77696e646f77732d382d6d6574726f2d7374796c652f3531322f72756e6e696e672e706e67"
               />
             </FlatButton>
-          </div>
+            </div>
         }
+        </div>
 
       </Paper>
     )
