@@ -51,7 +51,7 @@ Just login with your facebook account and link how many Pokemon GO accounts to i
 ## Running
 
 First, you need to run the pokemon-bot-service (the service that will interact with PokemonGO official API)
-Go to this repo:
+Here is a link to the repo: https://github.com/rafaelcorreiapoli/pokemon-bot-service
 ```
 git clone https://github.com/rafaelcorreiapoli/pokemon-bot-service
 cd pokemon-bot-service
