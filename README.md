@@ -46,3 +46,24 @@ Just login with your facebook account and link how many Pokemon GO accounts to i
 - [ ] Lucky Egg + Evolve algorithm
 - [x] Encounter pokemons
 - [x] Catch pokemons
+
+
+## Running
+
+First, you need to run the pokemon-bot-service (the service that will interact with PokemonGO official API)
+Go to this repo:
+```
+git clone https://github.com/rafaelcorreiapoli/pokemon-bot-service
+cd pokemon-bot-service
+npm i
+meteor -p 4000
+```
+
+
+```
+git clone https://github.com/rafaelcorreiapoli/pokemon-web.git
+cd pokemon-web
+npm i
+meteor
+```
+go to src/server/BotService and make sure you are connecting to the right IP where pokemon-bot-service is
