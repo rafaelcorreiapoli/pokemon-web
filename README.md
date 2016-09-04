@@ -1,25 +1,28 @@
 # Pokemon GO Web Client
+## What?
 Now you can interact with official Pokemon GO's server with a web client!
 You can use your arrow keys to walk and your mouse to catch pokemons. Everything is displayed in a nice way using Google Maps.
 Also, you can use pokestops, transfer/evolve pokemons and use/drop items.
 In this version, you actually see other players on map and can even chat with them.
 Just login with your facebook account and link how many Pokemon GO accounts to it, so you can switch between your trainers.
 
-**Encounter pokemons**
+## Screenshots
 ![alt tag](https://raw.githubusercontent.com/rafaelcorreiapoli/pokemon-web/master/screenshots/Jogo1.png?token=AMPsyCZf3UXh4hEXSu3eKf0H75Z7S30xks5X1d9HwA%3D%3D)
+*Encounter pokemons*
 
-**Nice map visualization. Rotating the angle that you are walking makes the entire map to rotate**
 ![alt tag](https://raw.githubusercontent.com/rafaelcorreiapoli/pokemon-web/master/screenshots/Jogo2.png?token=AMPsyFUDq0CBDZd4Tk5Otxydw1akpm0bks5X1eA9wA%3D%3D)
+*Nice map visualization. Rotating the angle that you are walking makes the entire map to rotate*
 
-**Play with multiple Pokemon GO' accounts**
 ![alt tag](https://raw.githubusercontent.com/rafaelcorreiapoli/pokemon-web/master/screenshots/Jogo3.png?token=AMPsyEb48BWRprj1jEQmFEvE0LZvf89kks5X1d-zwA%3D%3D)
+*Play with multiple Pokemon GO' accounts*
 
-**Get Pokestops and check your inventory**
 ![alt tag](https://raw.githubusercontent.com/rafaelcorreiapoli/pokemon-web/master/screenshots/Jogo5.png?token=AMPsyFTcohJSub4NVZwyKDcuJPhHeOPcks5X1d__wA%3D%3D)
+*Get Pokestops and check your inventory*
 
-**Catch pokemons!!**
 ![alt tag](https://raw.githubusercontent.com/rafaelcorreiapoli/pokemon-web/master/screenshots/Jogo6.png?token=AMPsyGPXsKeCtrOGXXaFz97LbaI4Qp1Kks5X1eAXwA%3D%3D)
+*Catch pokemons!!*
 
+## Todo
 - [x] Display pokemons on map
 - [x] Display pokestops on map
 - [x] Display catched pokemons on map
