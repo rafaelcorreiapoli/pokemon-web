@@ -7,6 +7,7 @@ import React from 'react';
 import 'lib/methods'
 import '@collections/pokemons'
 import 'client/config/accounts'
+import 'client/stubs'
 
 Meteor.startup(() => {
   Package['msavin:mongol'].Mongol.showCollection('eggs')

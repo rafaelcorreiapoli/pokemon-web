@@ -7,3 +7,5 @@ export Add from 'material-ui/svg-icons/content/add-circle-outline';
 export Logout from 'material-ui/svg-icons/action/exit-to-app'
 export Help from 'material-ui/svg-icons/action/help-outline'
 export Menu from 'material-ui/svg-icons/navigation/more-vert'
+export Transfer from 'material-ui/svg-icons/action/compare-arrows'
+export Evolve from 'material-ui/svg-icons/action/eject'

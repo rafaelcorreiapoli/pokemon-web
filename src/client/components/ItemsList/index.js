@@ -1,21 +1,21 @@
 import React, { PropTypes } from 'react'
 import { List } from 'material-ui/List';
-import EggsListItem from './EggsListItem'
+import ItemsListItem from './ItemsListItem'
 import Infinite from 'react-infinite'
 
-const EggsList = ({
-  eggs
+const ItemsList = ({
+  items
 }) => {
   return (
     <List>
       <Infinite elementHeight={72}
        containerHeight={752}
-       >
+      >
       {
-        eggs && eggs.entrySeq().map(([key, egg]) => (
-          <EggsListItem
+        items && items.entrySeq().map(([key, item]) => (
+          <ItemsListItem
             key={key}
-            {...egg.toObject()}
+            {...item.toObject()}
           />
         ))
       }
@@ -24,4 +24,4 @@ const EggsList = ({
   )
 }
 
-export default EggsList
+export default ItemsList

@@ -23,7 +23,10 @@ class AppBar extends React.Component {
       onClickProfileLink,
       onClickHelpLink,
       onClickLogoutLink,
+      bots,
+      onClickBot
     } = this.props
+    console.log(bots)
     return (
       <MUIAppBar
         titleStyle={{
@@ -45,6 +48,16 @@ class AppBar extends React.Component {
               primaryText="Profile"
               onClick={onClickProfileLink}
             />
+            <Divider />
+            {bots && bots.map(bot => (
+              <MenuItem
+                disabled={bot.selected}
+                leftIcon={<Profile />}
+                key={bot._id}
+                primaryText={bot.nickname}
+                onClick={() => onClickBot(bot._id)}
+              />
+            ))}
             <Divider />
             <MenuItem
               leftIcon={<Add />}

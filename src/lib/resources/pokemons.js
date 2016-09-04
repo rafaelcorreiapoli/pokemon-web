@@ -1,4 +1,4 @@
-export default {
+const original =  {
   1: {
     'num':'001',
     'name':'Bulbasaur',
@@ -122,7 +122,7 @@ export default {
   13: {
     'num':'013',
     'name':'Weedle',
-    'img':'http://www.serebii.net/pokemongo/pokemon/013.png',
+    'img':'https://img.pokemondb.net/sprites/black-white/anim/normal/weedle.gif',
     'type': 'Bug / Poison',
     'height': '0.30 m',
     'weight': '3.2 kg',
@@ -1510,3 +1510,24 @@ export default {
     'egg': 'Not in Eggs'
   }
 }
+
+const final = {}
+Object.keys(original).map(id => {
+  const pok = original[id]
+  const name = pok.name
+    .toLowerCase()
+    .trim()
+    .replace('♀', 'f')
+    .replace('♂', 'm')
+    .replace(' ', '-')
+  const nameSemTraco = name.replace('-', '')
+  final[id] = {
+    ...pok,
+    imgGo: pok.img,
+    imgBig: `https://img.pokemondb.net/artwork/${name}.jpg`,
+    img: `https://img.pokemondb.net/sprites/black-white/anim/normal/${name}.gif`,
+    encounterImg: `http://www.pokestadium.com/sprites/xy/${nameSemTraco}.gif`
+  }
+})
+
+export default final

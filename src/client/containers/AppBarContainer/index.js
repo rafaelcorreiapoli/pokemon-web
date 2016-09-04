@@ -4,6 +4,10 @@ import { push } from 'react-router-redux';
 import { setDrawerOpen, setInsertBotDialogOpen } from '@ducks/layout'
 import { logout } from '@ducks/login'
 import AppBar from '@components/AppBar'
+import Bots from '@collections/bots'
+import { Meteor } from 'meteor/meteor'
+import { composeWithTracker } from 'react-komposer'
+import { call } from '@ducks/methods'
 
 const mapStateToProps = (state) => {
   return {
@@ -28,11 +32,29 @@ const mapDispatchToProps = (dispatch) => {
     },
     onClickLogoutLink() {
       dispatch(logout())
+    },
+    onClickBot(botId) {
+      dispatch(call('bots.selectBot', { botId }))
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.log(err)
+      })
     }
   }
 }
 
+const composer = (props, onData) => {
+  if (Meteor.subscribe('bots').ready()) {
+    const bots = Bots.find({ userId: Meteor.userId()}).fetch()
+
+    onData(null, {
+      bots,
+    })
+  }
+}
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AppBar)
+)(composeWithTracker(composer)(AppBar))

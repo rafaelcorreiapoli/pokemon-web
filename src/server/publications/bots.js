@@ -8,3 +8,10 @@ Meteor.publish('bots.profile', ({ botId }) =>
     _id: botId,
   })
 )
+
+Meteor.publish('bots.selectedBot', function() {
+  return Bots.find({
+    userId: this.userId,
+    selected: true,
+  })
+})

@@ -58,7 +58,7 @@ export const getPokestop = (botId, pokestopId) => dispatch => {
 
 export const catchPokemon = (botId, encounterIdNumber) => dispatch => {
   dispatch(
-    call('encounters.catch', { botId, encounterIdNumber })
+    call('bots.catchPokemon', { botId, encounterIdNumber })
   )
   .then(res => {
     console.log(res)
@@ -70,7 +70,7 @@ export const catchPokemon = (botId, encounterIdNumber) => dispatch => {
 
 export const encounterPokemon = (botId, encounterIdNumber) => dispatch => {
   dispatch(
-    call('encounters.encounter', { botId, encounterIdNumber })
+    call('bots.encounterPokemon', { botId, encounterIdNumber })
   )
   .then(res => {
     console.log(res)
