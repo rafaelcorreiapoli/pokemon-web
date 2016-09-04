@@ -22,6 +22,17 @@ Just login with your facebook account and link how many Pokemon GO accounts to i
 ![alt tag](https://raw.githubusercontent.com/rafaelcorreiapoli/pokemon-web/master/screenshots/Jogo6.png?token=AMPsyGPXsKeCtrOGXXaFz97LbaI4Qp1Kks5X1eAXwA%3D%3D)
 *Catch pokemons!!*
 
+## How to play
+- Login with your facebook
+- Click on the top-right menu and select Create New Trainer
+- Select a starting location for the bot
+- Use a fake gmail account (Or use your offical account at your own risk)
+- Click Create
+- Go to the same menu and select your recently created trainer
+- Click "LOGIN BOT"
+- Use your arrow keys to walk in the map
+- Use your mouse to catch pokemons/pokestops
+
 ## Todo
 - [x] Display pokemons on map
 - [x] Display pokestops on map
@@ -67,4 +78,4 @@ cd pokemon-web
 npm i
 meteor
 ```
-go to src/server/BotService and make sure you are connecting to the right IP where pokemon-bot-service is
+go to src/server/BotService and make sure you are connecting to the right IP where pokemon-bot-service is running
