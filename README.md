@@ -70,6 +70,7 @@ cd pokemon-bot-service
 npm i
 meteor -p 4000
 ```
+and just leave it running...
 
 
 ```
@@ -78,4 +79,6 @@ cd pokemon-web
 npm i
 meteor
 ```
+and access http://localhost:3000
+
 go to src/server/BotService and make sure you are connecting to the right IP where pokemon-bot-service is running
