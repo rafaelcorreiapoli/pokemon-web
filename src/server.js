@@ -5,6 +5,8 @@ import './lib/methods'
 import './server/methods'
 import './server/BotService'
 import './server/config/services'
+import './server/boot'
+
 Meteor.startup(() => {
 
 })

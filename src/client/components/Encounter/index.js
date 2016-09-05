@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import { Paper, FlatButton, RaisedButton } from 'material-ui'
 import pokemonsById from '@resources/pokemons'
+import itemsById from '@resources/items'
 
 const styles = {
   container: {
@@ -34,8 +35,10 @@ const styles = {
     width: 50,
     height: 50,
   },
-  pokemonImg: {
-    margin: 20
+  mainImg: {
+    margin: 20,
+    width: 150,
+    height: 150,
   },
   actionRow: {
     display: 'flex',
@@ -86,7 +89,7 @@ class Encounter extends React.Component {
         return (
           <img
             src="http://vignette1.wikia.nocookie.net/thelorienlegacies/images/2/2c/4129-pokemon-pokeball.png/revision/latest?cb=20140822201518"
-            style={{ width: 150, height: 150 }}
+            style={styles.mainImg}
           />
         )
       }
@@ -94,11 +97,11 @@ class Encounter extends React.Component {
         return (
           <img
             src="http://vignette3.wikia.nocookie.net/roblox/images/c/c6/Smoke.png/revision/latest?cb=20091213220753"
-            style={{ width: 150, height: 150 }}
+            style={styles.mainImg}
           />
         )
       }
-      return <img src={pokemonsById[pokedexNumber].encounterImg} style={styles.pokemonImg} />
+      return <img src={pokemonsById[pokedexNumber].encounterImg} style={styles.mainImg} />
     }
     return (
       <Paper style={mergedStyles}>
@@ -113,19 +116,23 @@ class Encounter extends React.Component {
             onClick={onClickRun}
           />
           :
-            <div>
-            <FlatButton style={styles.button} onClick={onClickCatch}>
-              <img
-                style={styles.pokeballImg}
-                src="http://vignette1.wikia.nocookie.net/thelorienlegacies/images/2/2c/4129-pokemon-pokeball.png/revision/latest?cb=20140822201518"
-              />
-            </FlatButton>
-            <FlatButton style={styles.button} onClick={onClickRun}>
-              <img
-                style={styles.runImg}
-                src="https://camo.githubusercontent.com/642cce8f6da1c3b2c7903313957c5a0e40430e17/68747470733a2f2f63646e322e69636f6e66696e6465722e636f6d2f646174612f69636f6e732f77696e646f77732d382d6d6574726f2d7374796c652f3531322f72756e6e696e672e706e67"
-              />
-            </FlatButton>
+            <div style={{ display: 'flex' }}>
+              {
+                [1, 2, 3, 4].map(i => (
+                  <FlatButton style={styles.button} onClick={() => onClickCatch(i)}>
+                    <img
+                      style={styles.pokeballImg}
+                      src={itemsById[i].img}
+                    />
+                  </FlatButton>
+                ))
+              }
+              <FlatButton style={styles.button} onClick={onClickRun}>
+                <img
+                  style={styles.runImg}
+                  src="https://camo.githubusercontent.com/642cce8f6da1c3b2c7903313957c5a0e40430e17/68747470733a2f2f63646e322e69636f6e66696e6465722e636f6d2f646174612f69636f6e732f77696e646f77732d382d6d6574726f2d7374796c652f3531322f72756e6e696e672e706e67"
+                />
+              </FlatButton>
             </div>
         }
         </div>

@@ -1527,7 +1527,8 @@ Object.keys(original).map(id => {
     imgGo: pok.img,
     imgBig: `https://img.pokemondb.net/artwork/${name}.jpg`,
     img: `https://img.pokemondb.net/sprites/black-white/anim/normal/${name}.gif`,
-    encounterImg: `http://www.pokestadium.com/sprites/xy/${nameSemTraco}.gif`
+    //encounterImg: `http://www.pokestadium.com/sprites/xy/${nameSemTraco}.gif`
+    encounterImg: pok.img,
   }
 })
 

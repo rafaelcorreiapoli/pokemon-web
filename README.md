@@ -82,4 +82,3 @@ meteor
 and access http://localhost:3000
 
 *(Note: go to ```src/server/BotService/index.js``` and make sure you are connecting to the right IP where pokemon-bot-service is running)*
-

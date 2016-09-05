@@ -85,9 +85,9 @@ export const getPokestop = (botId, pokestopId) => (dispatch, getState) => {
   })
 }
 
-export const catchPokemon = (botId, encounterIdNumber) => dispatch => {
+export const catchPokemon = (botId, encounterIdNumber, pokeball) => dispatch => {
   dispatch(
-    call('bots.catchPokemon', { botId, encounterIdNumber })
+    call('bots.catchPokemon', { botId, encounterIdNumber, pokeball })
   )
   .then(res => {
     console.log(res)

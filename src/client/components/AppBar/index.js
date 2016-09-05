@@ -26,7 +26,6 @@ class AppBar extends React.Component {
       bots,
       onClickBot
     } = this.props
-    console.log(bots)
     return (
       <MUIAppBar
         titleStyle={{

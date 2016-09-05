@@ -10,6 +10,5 @@ export const getSelectedBot = (Bots) =>
   })
 
 export const getBots = (Bots) => {
-console.log(Bots)
   return Bots.find().fetch()
 }

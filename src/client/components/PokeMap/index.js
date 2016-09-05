@@ -6,7 +6,7 @@ import GoogleMap from 'google-map-react';
 import keydown, { Keys } from 'react-keydown';
 import Encounter from '@components/Encounter'
 import moment from 'moment'
-
+import { mapStyle1, mapStyle2 } from '@resources/map_style'
 const mapStyleBuilder = (width, height) => ({
   position: 'absolute',
   width,
@@ -27,439 +27,7 @@ const IDLE_BOT_IMG = 'https://www.google.com/intl/en_ALL/mapfiles/marker.png'
 const IDLE_BOT_WIDTH = 20
 const IDLE_BOT_HEIGHT = 34
 
-const mapStyle = [
-  {
-    'featureType': 'landscape.man_made',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'color': '#a1f199',
-      },
-    ],
-  },
-  {
-    'featureType': 'landscape.natural.landcover',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'color': '#37bda2',
-      },
-    ],
-  },
-  {
-    'featureType': 'landscape.natural.terrain',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'color': '#37bda2',
-      },
-    ],
-  },
-  {
-    'featureType': 'poi.attraction',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'visibility': 'on',
-      },
-    ],
-  },
-  {
-    'featureType': 'poi.business',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'color': '#e4dfd9',
-      },
-    ],
-  },
-  {
-    'featureType': 'poi.business',
-    'elementType': 'labels.icon',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'poi.park',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'color': '#37bda2',
-      },
-    ],
-  },
-  {
-    'featureType': 'road',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'color': '#84b09e',
-      },
-    ],
-  },
-  {
-    'featureType': 'road',
-    'elementType': 'geometry.stroke',
-    'stylers': [
-      {
-        'color': '#fafeb8',
-      },
-      {
-        'weight': '1.25',
-      },
-    ],
-  },
-  {
-    'featureType': 'road.highway',
-    'elementType': 'labels.icon',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'water',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'color': '#5ddad6',
-      },
-    ],
-  },
-]
-const mapStyle2 = [
-  {
-    'featureType': 'all',
-    'elementType': 'geometry',
-    'stylers': [
-      {
-        'color': '#c1fcb8',
-      },
-      {
-        'weight': '1.00',
-      },
-    ],
-  },
-  {
-    'featureType': 'all',
-    'elementType': 'labels',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'all',
-    'elementType': 'labels.text.fill',
-    'stylers': [
-      {
-        'gamma': 0.01,
-      },
-      {
-        'lightness': 20,
-      },
-    ],
-  },
-  {
-    'featureType': 'all',
-    'elementType': 'labels.text.stroke',
-    'stylers': [
-      {
-        'saturation': -31,
-      },
-      {
-        'lightness': -33,
-      },
-      {
-        'weight': 2,
-      },
-      {
-        'gamma': 0.8,
-      },
-    ],
-  },
-  {
-    'featureType': 'all',
-    'elementType': 'labels.icon',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'administrative',
-    'elementType': 'geometry',
-    'stylers': [
-      {
-        'hue': '#ff0000',
-      },
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'administrative',
-    'elementType': 'labels',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'landscape',
-    'elementType': 'labels',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'poi',
-    'elementType': 'all',
-    'stylers': [
-      {
-        'color': '#e0ffd3',
-      },
-    ],
-  },
-  {
-    'featureType': 'poi',
-    'elementType': 'geometry',
-    'stylers': [
-      {
-        'saturation': 20,
-      },
-    ],
-  },
-  {
-    'featureType': 'poi.park',
-    'elementType': 'geometry',
-    'stylers': [
-      {
-        'lightness': 20,
-      },
-      {
-        'saturation': -20,
-      },
-    ],
-  },
-  {
-    'featureType': 'poi.park',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'visibility': 'on',
-      },
-      {
-        'color': '#41ff82',
-      },
-    ],
-  },
-  {
-    'featureType': 'road',
-    'elementType': 'all',
-    'stylers': [
-      {
-        'weight': '2.00',
-      },
-    ],
-  },
-  {
-    'featureType': 'road',
-    'elementType': 'geometry',
-    'stylers': [
-      {
-        'lightness': '-20',
-      },
-      {
-        'saturation': '-67',
-      },
-      {
-        'gamma': '1.32',
-      },
-      {
-        'color': '#57aa9f',
-      },
-      {
-        'weight': '2.00',
-      },
-      {
-        'visibility': 'simplified',
-      },
-    ],
-  },
-  {
-    'featureType': 'road',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'visibility': 'on',
-      },
-      {
-        'weight': '2.00',
-      },
-    ],
-  },
-  {
-    'featureType': 'road',
-    'elementType': 'geometry.stroke',
-    'stylers': [
-      {
-        'saturation': 25,
-      },
-      {
-        'lightness': 25,
-      },
-      {
-        'weight': '1.00',
-      },
-      {
-        'color': '#f1ff8a',
-      },
-      {
-        'visibility': 'on',
-      },
-    ],
-  },
-  {
-    'featureType': 'road',
-    'elementType': 'labels',
-    'stylers': [
-      {
-        'weight': '2.12',
-      },
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'road.highway',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'visibility': 'on',
-      },
-      {
-        'color': '#4c98a8',
-      },
-    ],
-  },
-  {
-    'featureType': 'road.highway',
-    'elementType': 'labels',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'road.arterial',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'color': '#4c98a8',
-      },
-      {
-        'weight': '2.63',
-      },
-    ],
-  },
-  {
-    'featureType': 'road.arterial',
-    'elementType': 'geometry.stroke',
-    'stylers': [
-      {
-        'color': '#f1ff8a',
-      },
-    ],
-  },
-  {
-    'featureType': 'transit',
-    'elementType': 'all',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'transit',
-    'elementType': 'geometry',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'transit',
-    'elementType': 'labels',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'transit.line',
-    'elementType': 'all',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'transit.station',
-    'elementType': 'all',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-  {
-    'featureType': 'water',
-    'elementType': 'all',
-    'stylers': [
-      {
-        'lightness': -20,
-      },
-      {
-        'color': '#1b89d9',
-      },
-    ],
-  },
-  {
-    'featureType': 'water',
-    'elementType': 'geometry.fill',
-    'stylers': [
-      {
-        'color': '#1b87d9',
-      },
-    ],
-  },
-  {
-    'featureType': 'water',
-    'elementType': 'labels',
-    'stylers': [
-      {
-        'visibility': 'off',
-      },
-    ],
-  },
-]
+
 
 class MapElement extends React.Component {
   render() {
@@ -471,7 +39,7 @@ class MapElement extends React.Component {
         onClick={onClick}
         style={mergedStyles}
         src={src}
-      />
+        />
     )
   }
 }
@@ -508,8 +76,8 @@ class EncounterMap extends React.Component {
     const { pokemonId, onClick, style, expirationDate } = this.props
     const { width, height, loaded } = this.state
     const imgStyle = loaded
-      ? {}
-      : { display: 'none' }
+    ? {}
+    : { display: 'none' }
 
     const containerStyle = loaded ? mapStyleBuilder(width, height) : {}
 
@@ -519,14 +87,14 @@ class EncounterMap extends React.Component {
         {
           (moment(expirationDate) > moment()) ?
           (
-          <span style={{ backgroundColor: 'rgba(0,0,0,0.7)', color: 'white', padding: '2px 6px 2px 6px', textAlign: 'center', borderRadius: 8 }}>
-            {moment(moment(expirationDate).diff(moment())).format('mm:ss')}
-          </span>
+            <span style={{ backgroundColor: 'rgba(0,0,0,0.7)', color: 'white', padding: '2px 6px 2px 6px', textAlign: 'center', borderRadius: 8 }}>
+              {moment(moment(expirationDate).diff(moment())).format('mm:ss')}
+            </span>
           )
           : (
-          <span style={{ backgroundColor: 'rgba(255,0,0,0.7)', color: 'white', padding: '2px 6px 2px 6px', textAlign: 'center', borderRadius: 8 }}>
-            -
-          </span>
+            <span style={{ backgroundColor: 'rgba(255,0,0,0.7)', color: 'white', padding: '2px 6px 2px 6px', textAlign: 'center', borderRadius: 8 }}>
+              -
+            </span>
           )
         }
 
@@ -535,8 +103,8 @@ class EncounterMap extends React.Component {
           src={pokemonsById[pokemonId].encounterImg}
           onLoad={this.handleLoad}
           onClick={onClick}
-        />
-  </div>
+          />
+      </div>
     )
   }
 }
@@ -596,21 +164,20 @@ class PokeMap extends React.Component {
       const code = (e.keyCode ? e.keyCode : e.which);
       switch (code) {
         case 39:
-          onLeft(selectedBot._id)
-          break;
+        onLeft(selectedBot._id)
+        break;
         case 37:
-          onRight(selectedBot._id)
-          break;
+        onRight(selectedBot._id)
+        break;
         case Keys.UP:
-          onUp(selectedBot._id)
-          break;
+        onUp(selectedBot._id)
+        break;
         case Keys.DOWN:
-          onDown(selectedBot._id)
-          break;
+        onDown(selectedBot._id)
+        break;
         default:
       }
     });
-    console.log(this.keyListener)
   }
 
   render() {
@@ -631,8 +198,8 @@ class PokeMap extends React.Component {
     } = this.props
     const rotateAngle = selectedBot ? selectedBot.angle : 0
     const mapCenterCoords = selectedBot
-      ? { lat: selectedBot.coords.latitude, lng: selectedBot.coords.longitude }
-      : { lat: -23.632697, lng: -46.713803 }
+    ? { lat: selectedBot.coords.latitude, lng: selectedBot.coords.longitude }
+    : { lat: -23.632697, lng: -46.713803 }
     return (
       <div style={{ width: 800, height: 800, overflow: 'hidden' }}>
         <img
@@ -650,7 +217,7 @@ class PokeMap extends React.Component {
                     <img
                       src={itemsById[item].img}
                       style={{width: 50, height: 50}}
-                    />
+                      />
                   </div>
                 ))
               ))
@@ -661,7 +228,7 @@ class PokeMap extends React.Component {
             center={mapCenterCoords}
             zoom={16}
             options={{
-              styles: mapStyle,
+              styles: mapStyle1,
               heading: 10,
               keyboardShortcuts: false,
             }}
@@ -674,26 +241,24 @@ class PokeMap extends React.Component {
               marginLeft: '-25%',
               marginTop: '-25%',
               transform: `rotate(${rotateAngle}deg)`,
-              //WebkitBackfaceVisibility: 'hidden'
-              //transformOrigin: '50% 50%'
             }}
           >
-
             {(this.state.assetsLoaded && bots) && bots.map((bot, key) => {
               const coords = bot.coords
               if (coords) {
                 return bot.selected ? (
-                  <Bot
-                    key={key}
-                    image={this.refs.botAsset}
-                    angle={90}
-                    lat={coords.latitude}
-                    lng={coords.longitude}
-                    style={{
-                      ...mapStyleBuilder(32, 32),
-                      transform: `rotate(-${rotateAngle}deg)` }}
-                  />
-                ) : (
+                <Bot
+                  key={key}
+                  image={this.refs.botAsset}
+                  angle={90}
+                  lat={coords.latitude}
+                  lng={coords.longitude}
+                  style={{
+                    ...mapStyleBuilder(32, 32),
+                    transform: `rotate(-${rotateAngle}deg)`
+                  }}
+                />
+                  ) : (
                   <MapElement
                     src={IDLE_BOT_IMG}
                     width={IDLE_BOT_WIDTH}
@@ -704,146 +269,77 @@ class PokeMap extends React.Component {
                   />
                 )
               }
-              return null
+                return null
             })}
-            {pokestops && pokestops.slice(pokestops.length - 100, pokestops.length - 1).map((pokestop, key) => (
-              <MapElement
-                width={POKESTOP_MAP_WIDTH}
-                height={POKESTOP_MAP_HEIGHT}
-                src={POKESTOP_IMG}
-                key={key}
-                onClick={() => onPokestopClick(selectedBot._id, pokestop._id)}
-                lat={pokestop.latitude}
-                lng={pokestop.longitude}
-                style={{ transform: `rotate(-${rotateAngle}deg)` }}
-              />
-            ))}
-            {encounters && encounters.map((encounter, key) => {
-              const commonKeys = {
-                lat: encounter.latitude,
-                lng: encounter.longitude,
-                key,
-              }
-              if (catchedEncounters.indexOf(encounter._id) !== -1) {
-                return <MapElement
-                  width={POKEBALL_MAP_WIDTH}
-                  height={POKEBALL_MAP_HEIGHT}
-                  src={POKEBALL_IMG}
-                  {...commonKeys}
+
+              {pokestops && pokestops.map((pokestop, key) => (
+                <MapElement
+                  width={POKESTOP_MAP_WIDTH}
+                  height={POKESTOP_MAP_HEIGHT}
+                  src={POKESTOP_IMG}
+                  key={key}
+                  onClick={() => onPokestopClick(selectedBot._id, pokestop._id)}
+                  lat={pokestop.latitude}
+                  lng={pokestop.longitude}
                   style={{ transform: `rotate(-${rotateAngle}deg)` }}
-                />
-              } else if (fleedEncounters.indexOf(encounter._id) !== -1) {
-                return <MapElement
-                  width={FLEE_MAP_WIDTH}
-                  height={FLEE_MAP_HEIGHT}
-                  src={FLEE_IMG}
-                  {...commonKeys}
-                  style={{ transform: `rotate(-${rotateAngle}deg)` }}
-                />
-              } else {
-                return (
-                  <EncounterMap
-                    onClick={() => onClickMapPokemon(selectedBot._id, encounter._id)}
-                    pokemonId={encounter.pokedexNumber}
-                    expirationDate={encounter.expirationDate}
-                    style={{ transform: `rotate(-${rotateAngle}deg) translatez(0) scale(0.99)` }}
-                    {...commonKeys}
                   />
-                )
-              }
-            })}
-          </GoogleMap>
-          {currentEncounter &&
-            <Encounter
-              pokedexNumber={currentEncounter.pokedexNumber}
-              cp={currentEncounterCP}
-              catched={catchedEncounters.indexOf(currentEncounter._id) !== -1}
-              fleed={fleedEncounters.indexOf(currentEncounter._id) !== -1}
-              onClickRun={() => onClickRun(selectedBot._id)}
-              onClickCatch={() => onClickCatch(selectedBot._id, currentEncounter._id)}
-              style={{
-                position: 'absolute',
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-          }
-        </div>
-        {/* <GoogleMapLoader
-          containerElement={
-          <div
-          style={{
-          height: '800px',
-          }}
-          />
-          }
-          googleMapElement={
-          <GoogleMap
-          // ref={(map) => console.log(map)}
-          defaultZoom={18}
-          defaultCenter={{ lat: -23.632746, lng: -46.713787 }}
-          onClick={(e) => onMapClick(selectedBot, e.latLng.lat(), e.latLng.lng())}
-          >
-          {encounters && encounters.map((encounter, key) => (
-          <Marker
-          animation={currentEncounter === encounter._id
-          ? google.maps.Animation.BOUNCE
-          : null}
-          opacity={catchedEncounters.indexOf(encounter._id) !== -1 ? 0.5 : 1}
-          key={key}
-          onClick={() => {
-          if (currentEncounter === encounter._id) {
-          onCatchPokemon(selectedBot, encounter._id)
-          } else {
-          onClickMapPokemon(selectedBot, encounter._id)
-          }
-          }}
-          position={{
-          lat: encounter.latitude,
-          lng: encounter.longitude,
-          }}
-          icon={fleedEncounters.indexOf(encounter._id) === -1
-          ? pokemonsById[encounter.get('pokedexNumber')].img
-          : 'https://lh3.googleusercontent.com/-iCtUZjU0hFQ/AAAAAAAAAAI/AAAAAAAAAQo/-ugYw1XIMHE/s46-c-k-no/photo.jpg'}
-          />
-          ))}
+              ))}
 
-          {bots && bots.map((bot, key) => {
-          const coords = bot.coords
-          if (coords) {
-          return (
-          <Marker
-          key={key}
-          icon={selectedBot === bot._id ? 'http://www.ps4-magazin.de/wcf/images/avatars/avatar-9254.gif' : null}
-          onClick={() => onBotClick(bot._id)}
-          position={{
-          lat: coords.latitude,
-          lng: coords.longitude,
-          }}
-          />
-          );
-          }
-          return null
-          })}
-
-          {pokestops && pokestops.map((pokestop, key) => (
-          <Marker
-          key={key}
-          icon={'http://megaicons.net/static/img/icons_sizes/15/534/32/map-marker-ball-left-pink-icon.png'}
-          onClick={() => onPokestopClick(selectedBot, pokestop._id)}
-          position={{
-          lat: pokestop.latitude,
-          lng: pokestop.longitude,
-          }}
-          />
-          ))}
-          </GoogleMap>
-          }
-          /> */}
+              {encounters && encounters.map((encounter, key) => {
+                const commonKeys = {
+                  lat: encounter.latitude,
+                  lng: encounter.longitude,
+                  key,
+                }
+                if (catchedEncounters.indexOf(encounter._id) !== -1) {
+                  return <MapElement
+                    width={POKEBALL_MAP_WIDTH}
+                    height={POKEBALL_MAP_HEIGHT}
+                    src={POKEBALL_IMG}
+                    {...commonKeys}
+                    style={{ transform: `rotate(-${rotateAngle}deg)` }}
+                    />
+                } else if (fleedEncounters.indexOf(encounter._id) !== -1) {
+                  return <MapElement
+                    width={FLEE_MAP_WIDTH}
+                    height={FLEE_MAP_HEIGHT}
+                    src={FLEE_IMG}
+                    {...commonKeys}
+                    style={{ transform: `rotate(-${rotateAngle}deg)` }}
+                    />
+                } else {
+                  return (
+                    <EncounterMap
+                      onClick={() => onClickMapPokemon(selectedBot._id, encounter._id)}
+                      pokemonId={encounter.pokedexNumber}
+                      expirationDate={encounter.expirationDate}
+                      style={{ transform: `rotate(-${rotateAngle}deg) translatez(0) scale(0.99)` }}
+                      {...commonKeys}
+                      />
+                  )
+                }
+              })}
+            </GoogleMap>
+            {currentEncounter &&
+              <Encounter
+                pokedexNumber={currentEncounter.pokedexNumber}
+                cp={currentEncounterCP}
+                catched={catchedEncounters.indexOf(currentEncounter._id) !== -1}
+                fleed={fleedEncounters.indexOf(currentEncounter._id) !== -1}
+                onClickRun={() => onClickRun(selectedBot._id)}
+                onClickCatch={(pokeball) => onClickCatch(selectedBot._id, currentEncounter._id, pokeball)}
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                }}
+                />
+            }
+          </div>
         </div>
       )
-  }
+    }
   }
 
-export default keydown(PokeMap)
+  export default keydown(PokeMap)

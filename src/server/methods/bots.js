@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check'
-
+import geolib from 'geolib'
 import Eggs from '@collections/eggs'
 import Bots from '@collections/bots'
 import Encounters from '@collections/encounters'
@@ -17,6 +17,58 @@ const BOT_STATUS_LOGGED_IN = 2;
 const BOT_STATUS_PATROLLING = 3;
 const BOT_STATUS_ERROR = 4;
 
+
+const calculateRoutePlan = (origin, destination, metersPerStep) => {
+  const routePlanPoints = []
+  const deltaLongitude = destination.longitude - origin.longitude
+  const deltaLatitude = destination.latitude - origin.latitude
+  const distance = geolib.getDistance(origin, destination);
+  const necessarySteps = Math.ceil(distance / metersPerStep);
+  const dLongitude = deltaLongitude / necessarySteps
+  const dLatitude = deltaLatitude / necessarySteps
+
+  for (let i = 0; i < necessarySteps; i++) {
+    routePlanPoints.push({
+      latitude: origin.latitude + dLatitude * i,
+      longitude: origin.longitude + dLongitude * i,
+    })
+  }
+  console.log(routePlanPoints)
+  return routePlanPoints
+}
+
+const getClosestPokestop = ({ latitude, longitude }) => {
+  console.log(Pokestops.find({
+    loc: {
+      $near: {
+        $geometry: {
+          type: 'Point',
+          coordinates: [longitude, latitude],
+        },
+        // $maxDistance: 40,
+        // $minDistance: 0,
+      },
+    },
+  }, {
+    limit: 1,
+  }).fetch())
+
+  return Pokestops.findOne({
+    loc: {
+      $near: {
+        $geometry: {
+          type: 'Point',
+          coordinates: [longitude, latitude],
+        },
+        // $maxDistance: 40,
+        // $minDistance: 0,
+      },
+    },
+  }, {
+    limit: 1,
+  })
+}
+
 const validateBot = (botId, userId) => {
   check(botId, String)
   const bot = Bots.findOne(botId)
@@ -24,6 +76,7 @@ const validateBot = (botId, userId) => {
   return bot
 }
 const checkIsLoggedIn = () => {
+  console.log(Meteor.userId())
   const userId = Meteor.userId()
   if (userId) {
     return userId
@@ -33,6 +86,100 @@ const checkIsLoggedIn = () => {
 const botServiceSyncCall = Meteor.wrapAsync(BotService.call, BotService)
 
 Meteor.methods({
+  'bots.walkToClosestPokestop'({ botId, latitude, longitude }) {
+    const userId = checkIsLoggedIn()
+    const { token, coords: {
+      latitude: botLatitude,
+      longitude: botLongitude,
+    } } = validateBot(botId, userId)
+    const origin = { latitude: botLatitude, longitude: botLongitude }
+    const closestPokestop = getClosestPokestop(origin)
+
+    const { latitude: pokestopLatitude, longitude: pokestopLongitude } = closestPokestop
+    const destination = { latitude: pokestopLatitude, longitude: pokestopLongitude }
+    const route = calculateRoutePlan(origin, destination, 50, 1000);
+    console.log(route)
+
+    const nextReq = (times = 0) => {
+      if (times >= route.length) return console.log('reached destination!')
+      console.log('walking ', times)
+      const { latitude: nextLatitude, longitude: nextLongitude } = route[times]
+
+      Bots.update(botId, {
+        $set: {
+          coords: {
+            latitude: nextLatitude,
+            longitude: nextLongitude,
+          },
+        },
+      })
+
+      try {
+        botServiceSyncCall('setPosition', {
+          token,
+          latitude: nextLatitude,
+          longitude: nextLongitude,
+        })
+        Meteor.setTimeout(() => {
+          nextReq(times + 1)
+        }, 1500)
+      } catch (error) {
+        console.log(error)
+        console.log('error...')
+        Meteor.setTimeout(() => {
+          nextReq(times)
+        }, 1500)
+      }
+    }
+
+    nextReq()
+  },
+  'bots.removeSoftBan'({ botId }) {
+    const userId = checkIsLoggedIn()
+    const { token, coords: { latitude, longitude } } = validateBot(botId, userId)
+
+    const closestPokestop = getClosestPokestop({ latitude, longitude })
+    console.log(closestPokestop)
+    if (closestPokestop) {
+      const { _id, latitude: pokestopLatitude, longitude: pokestopLongitude } = closestPokestop
+      const nextReq = (times = 0) => {
+        if (times > 40) return console.log('softban removed!')
+
+        console.log('getting pokestop [', times, ']')
+        try {
+          const getPokestop = botServiceSyncCall('getPokestop', {
+            token,
+            pokestopId: _id,
+            latitude: pokestopLatitude,
+            longitude: pokestopLongitude,
+          })
+          Meteor.setTimeout(() => {
+            nextReq(times + 1)
+          }, 200)
+        } catch (error) {
+          console.log('error...')
+          Meteor.setTimeout(() => {
+            nextReq(times)
+          }, 200)
+        }
+      }
+
+      nextReq()
+    }
+  },
+  'bots.sniperPokemon'({ botId, latitude, longitude }) {
+    check(latitude, Number)
+    check(longitude, Number)
+
+    const userId = checkIsLoggedIn()
+    const { token } = validateBot(botId, userId)
+
+    Meteor.call('bots.setPosition', {
+      botId,
+      latitude,
+      longitude,
+    })
+  },
   'bots.run'({ botId }) {
     const userId = checkIsLoggedIn()
     validateBot(botId, userId)
@@ -161,8 +308,9 @@ Meteor.methods({
       throw new Meteor.Error(error.reason)
     }
   },
-  'bots.catchPokemon'({ botId, encounterIdNumber }) {
+  'bots.catchPokemon'({ botId, encounterIdNumber, pokeball = 1 }) {
     check(encounterIdNumber, String)
+    check(pokeball, Number)
     const userId = checkIsLoggedIn()
     const { token } = validateBot(botId, userId)
 
@@ -174,6 +322,7 @@ Meteor.methods({
         token,
         encounterId,
         spawnPointId,
+        pokeball,
       })
       if (catchPokemon === 1) {
         Bots.update(botId, {
@@ -182,7 +331,7 @@ Meteor.methods({
           },
         })
         Meteor.call('bots.refreshInventory', {
-          botId
+          botId,
         })
       } else if (catchPokemon === 0 || catchPokemon === 3) {
         Bots.update(botId, {
@@ -300,7 +449,7 @@ Meteor.methods({
       })
       if (transferPokemon.Status === 1) {
         Pokemons.remove({
-          _id: pokemonIdNumber
+          _id: pokemonIdNumber,
         })
       }
       return transferPokemon
@@ -367,11 +516,17 @@ Meteor.methods({
       })
 
       scan.pokestops && scan.pokestops.forEach(({ pokestopId, ...pokestop }) => {
+        const loc = {
+          type: 'Point',
+          coordinates: [pokestop.longitude, pokestop.latitude],
+        }
+
         Pokestops.upsert({
           _id: pokestopId,
         }, {
           $set: {
             _id: pokestopId,
+            loc,
             ...pokestop,
           },
         })

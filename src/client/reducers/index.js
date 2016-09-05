@@ -8,6 +8,8 @@ import game from '@ducks/game'
 import login from '@ducks/login'
 import layout from '@ducks/layout'
 import user from '@ducks/user'
+import pokesniper from '@ducks/pokesniper'
+import hackbox from '@ducks/hackbox'
 
 const rootReducer = combineReducers({
   form: formReducer,
@@ -19,6 +21,8 @@ const rootReducer = combineReducers({
   login,
   layout,
   user,
+  pokesniper,
+  hackbox
 });
 
 export default rootReducer

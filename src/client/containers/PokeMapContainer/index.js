@@ -21,10 +21,21 @@ const composer = (props, onData) => {
   const onError = (err) => {
     onData(new Error(err))
   }
-  const handlerEncounters = Meteor.subscribe('encounters', { onError })
-  const handlerPokestops = Meteor.subscribe('pokestops', { onError })
-  const handlerBots = Meteor.subscribe('bots', { onError })
+
   const selectedBot = getSelectedBot(Bots)
+
+  let latitude
+  let longitude
+  if (selectedBot) {
+    latitude = selectedBot.coords.latitude
+    longitude = selectedBot.coords.longitude
+  }
+
+  console.log(latitude, longitude)
+  const handlerEncounters = Meteor.subscribe('encounters', { onError })
+  const handlerPokestops = Meteor.subscribe('pokestops', { latitude, longitude }, { onError })
+  const handlerBots = Meteor.subscribe('bots', { onError })
+
 
   if (handlerEncounters.ready() && handlerPokestops.ready() && handlerBots.ready()) {
     let currentEncounter = null
@@ -86,8 +97,8 @@ const mapDispatchToProps = dispatch => ({
     console.log(botId, pokestopId)
     dispatch(getPokestop(botId, pokestopId))
   },
-  onClickCatch(botId, encounterId) {
-    dispatch(catchPokemon(botId, encounterId))
+  onClickCatch(botId, encounterId, pokeball) {
+    dispatch(catchPokemon(botId, encounterId, pokeball))
   },
   onClickRun(botId) {
     dispatch(call('bots.run', { botId }))
