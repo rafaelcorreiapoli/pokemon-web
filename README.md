@@ -47,7 +47,8 @@ Just login with your facebook account and link how many Pokemon GO accounts to i
 - [ ] Hatch Egg
 - [ ] Show profile
 - [x] Multiple accounts
-- [x] Use pokesniper to jump to rare pokemon
+- [x] Fetch rare pokemon from pokesniper API
+- [x] Jump to rare pokemon
 - [x] Use pokestop to unban IP (interact 40 times with pokestop)
 - [x] See other players on map
 - [ ] Chat
