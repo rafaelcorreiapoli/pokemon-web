@@ -39,7 +39,7 @@ Just login with your facebook account and link how many Pokemon GO accounts to i
 - [x] Display catched pokemons on map
 - [x] Display fleed pokemons on map
 - [ ] Encounter cleanup
-- [ ] Geo filter on map entites to optmize performance
+- [x] Geo filter on map entites to optmize performance
 - [x] Transfer pokemons
 - [x] List of catched pokemons
 - [x] List of items on inventory
@@ -47,8 +47,8 @@ Just login with your facebook account and link how many Pokemon GO accounts to i
 - [ ] Hatch Egg
 - [ ] Show profile
 - [x] Multiple accounts
-- [ ] Use pokesniper to jump to rare pokemon
-- [ ] Use pokestop to unban IP (interact 40 times with pokestop)
+- [x] Use pokesniper to jump to rare pokemon
+- [x] Use pokestop to unban IP (interact 40 times with pokestop)
 - [x] See other players on map
 - [ ] Chat
 - [ ] Use Razzberry
@@ -56,7 +56,8 @@ Just login with your facebook account and link how many Pokemon GO accounts to i
 - [ ] Evolve
 - [ ] Lucky Egg + Evolve algorithm
 - [x] Encounter pokemons
-- [x] Catch pokemons
+- [x] Catch pokemon
+- [ ] AI
 
 
 ## Running
