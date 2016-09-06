@@ -17,6 +17,8 @@ const checkIsLoggedIn = () => {
   throw new Meteor.Error('not-authorized')
 }
 
+console.log('stubs')
+
 Meteor.methods({
   'bots.encounterPokemon'({ botId, encounterIdNumber }) {
     this.unblock();
@@ -32,6 +34,7 @@ Meteor.methods({
     })
   },
   'bots.changeAngle'({ botId, direction }) {
+    console.log('change angle')
     const userId = checkIsLoggedIn()
     validateBot(botId, userId)
     const bot = Bots.findOne(botId)

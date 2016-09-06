@@ -17,7 +17,8 @@
         "@helpers": "client/helpers",
         "@selectors": "client/selectors",
         "@config": "client/config",
-        "@utils": "client/utils"
+        "@utils": "client/utils",
+        "@algorithms": "lib/algorithms"
       }
     }]
   ]

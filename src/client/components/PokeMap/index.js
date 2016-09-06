@@ -27,8 +27,6 @@ const IDLE_BOT_IMG = 'https://www.google.com/intl/en_ALL/mapfiles/marker.png'
 const IDLE_BOT_WIDTH = 20
 const IDLE_BOT_HEIGHT = 34
 
-
-
 class MapElement extends React.Component {
   render() {
     const { src, style, width, height, onClick } = this.props
@@ -39,7 +37,7 @@ class MapElement extends React.Component {
         onClick={onClick}
         style={mergedStyles}
         src={src}
-        />
+      />
     )
   }
 }

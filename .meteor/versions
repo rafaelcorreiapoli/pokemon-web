@@ -48,6 +48,8 @@ localstorage@1.0.11
 logging@1.1.15
 meteor@1.2.17
 meteor-base@1.0.4
+meteorhacks:meteorx@1.4.1
+meteorhacks:unblock@1.1.0
 meteortoys:allthings@3.0.0
 meteortoys:authenticate@3.0.0
 meteortoys:autopub@3.0.0

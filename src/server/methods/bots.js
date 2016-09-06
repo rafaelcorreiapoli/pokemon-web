@@ -1,5 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check'
+import { calculateRoutePlan } from '@algorithms/routes'
+import { sequentialRecursiveAlgorithm } from '@algorithms/misc'
+
 import geolib from 'geolib'
 import Eggs from '@collections/eggs'
 import Bots from '@collections/bots'
@@ -12,57 +15,24 @@ import itemsById from '@resources/items'
 import BotService from 'server/BotService'
 
 const BOT_STATUS_IDLE = 0;
-const BOT_STATUS_LOGGING_IN = 1;
-const BOT_STATUS_LOGGED_IN = 2;
-const BOT_STATUS_PATROLLING = 3;
-const BOT_STATUS_ERROR = 4;
 
-
-const calculateRoutePlan = (origin, destination, metersPerStep) => {
-  const routePlanPoints = []
-  const deltaLongitude = destination.longitude - origin.longitude
-  const deltaLatitude = destination.latitude - origin.latitude
-  const distance = geolib.getDistance(origin, destination);
-  const necessarySteps = Math.ceil(distance / metersPerStep);
-  const dLongitude = deltaLongitude / necessarySteps
-  const dLatitude = deltaLatitude / necessarySteps
-
-  for (let i = 0; i < necessarySteps; i++) {
-    routePlanPoints.push({
-      latitude: origin.latitude + dLatitude * i,
-      longitude: origin.longitude + dLongitude * i,
-    })
-  }
-  console.log(routePlanPoints)
-  return routePlanPoints
-}
-
-const getClosestPokestop = ({ latitude, longitude }) => {
-  console.log(Pokestops.find({
-    loc: {
-      $near: {
-        $geometry: {
-          type: 'Point',
-          coordinates: [longitude, latitude],
-        },
-        // $maxDistance: 40,
-        // $minDistance: 0,
-      },
+const getClosestPokestop = ({ latitude, longitude, maxDistance, minDistance }) => {
+  const $near = {
+    $geometry: {
+      type: 'Point',
+      coordinates: [longitude, latitude],
     },
-  }, {
-    limit: 1,
-  }).fetch())
+  }
+  if (maxDistance) {
+    $near.$maxDistance = maxDistance
+  }
+  if (minDistance) {
+    $near.$minDistance = minDistance
+  }
 
   return Pokestops.findOne({
     loc: {
-      $near: {
-        $geometry: {
-          type: 'Point',
-          coordinates: [longitude, latitude],
-        },
-        // $maxDistance: 40,
-        // $minDistance: 0,
-      },
+      $near,
     },
   }, {
     limit: 1,
@@ -76,7 +46,6 @@ const validateBot = (botId, userId) => {
   return bot
 }
 const checkIsLoggedIn = () => {
-  console.log(Meteor.userId())
   const userId = Meteor.userId()
   if (userId) {
     return userId
@@ -86,7 +55,7 @@ const checkIsLoggedIn = () => {
 const botServiceSyncCall = Meteor.wrapAsync(BotService.call, BotService)
 
 Meteor.methods({
-  'bots.walkToClosestPokestop'({ botId, latitude, longitude }) {
+  'bots.walkToClosestPokestop'({ botId }) {
     const userId = checkIsLoggedIn()
     const { token, coords: {
       latitude: botLatitude,
@@ -95,15 +64,17 @@ Meteor.methods({
     const origin = { latitude: botLatitude, longitude: botLongitude }
     const closestPokestop = getClosestPokestop(origin)
 
-    const { latitude: pokestopLatitude, longitude: pokestopLongitude } = closestPokestop
-    const destination = { latitude: pokestopLatitude, longitude: pokestopLongitude }
-    const route = calculateRoutePlan(origin, destination, 50, 1000);
-    console.log(route)
+    const { latitude, longitude } = closestPokestop
+    const destination = { latitude, longitude }
+    const route = calculateRoutePlan(origin, destination, 50);
 
-    const nextReq = (times = 0) => {
-      if (times >= route.length) return console.log('reached destination!')
-      console.log('walking ', times)
-      const { latitude: nextLatitude, longitude: nextLongitude } = route[times]
+
+    const sraResult = sequentialRecursiveAlgorithm((step, errorCount) => {
+      //  If we are higher than the last element of index, resolve the SRA
+
+      console.log(`walking ${step}, ${errorCount}`)
+
+      const { latitude: nextLatitude, longitude: nextLongitude } = route[step]
 
       Bots.update(botId, {
         $set: {
@@ -114,57 +85,75 @@ Meteor.methods({
         },
       })
 
-      try {
-        botServiceSyncCall('setPosition', {
-          token,
-          latitude: nextLatitude,
-          longitude: nextLongitude,
-        })
-        Meteor.setTimeout(() => {
-          nextReq(times + 1)
-        }, 1500)
-      } catch (error) {
-        console.log(error)
-        console.log('error...')
-        Meteor.setTimeout(() => {
-          nextReq(times)
-        }, 1500)
-      }
-    }
+      const result = botServiceSyncCall('setPosition', {
+        token,
+        latitude: nextLatitude,
+        longitude: nextLongitude,
+      })
 
-    nextReq()
+      //  If the sync call didn't return anything, a problem ocurred
+      //  Let's throw an error so SRA will increase errorCount.
+      //  If the server continues to not respond, it will exit the SRA
+      if (!result) {
+        throw new Error('no-result')
+      }
+
+      if (step === route.length - 1) return true;
+    }, {
+      intervalMs: 1000,
+      errorsToAbort: 10,
+    })()
+
+    if (sraResult) {
+      console.log('sequential algorithm succeed')
+    } else {
+      console.log('sequential algorithm failed')
+    }
   },
   'bots.removeSoftBan'({ botId }) {
     const userId = checkIsLoggedIn()
     const { token, coords: { latitude, longitude } } = validateBot(botId, userId)
-
     const closestPokestop = getClosestPokestop({ latitude, longitude })
-    console.log(closestPokestop)
     if (closestPokestop) {
       const { _id, latitude: pokestopLatitude, longitude: pokestopLongitude } = closestPokestop
-      const nextReq = (times = 0) => {
-        if (times > 40) return console.log('softban removed!')
+      const sraResult = sequentialRecursiveAlgorithm((step, errors) => {
+        console.log(`getting pokestop ${step}, ${errors}`)
+        const getPokestop = botServiceSyncCall('getPokestop', {
+          token,
+          pokestopId: _id,
+          latitude: pokestopLatitude,
+          longitude: pokestopLongitude,
+        })
+        //  0 undefined errors
+        //  1 success
+        //  2 out of range
+        //  3 used
 
-        console.log('getting pokestop [', times, ']')
-        try {
-          const getPokestop = botServiceSyncCall('getPokestop', {
-            token,
-            pokestopId: _id,
-            latitude: pokestopLatitude,
-            longitude: pokestopLongitude,
-          })
-          Meteor.setTimeout(() => {
-            nextReq(times + 1)
-          }, 200)
-        } catch (error) {
-          console.log('error...')
-          Meteor.setTimeout(() => {
-            nextReq(times)
-          }, 200)
+        //  If is not successfull, stop the SRA
+        if (getPokestop.result !== 1) return false
+        //  If is successful and we have itemsAwarded, it means that somehow the soft ban has gone
+        if (getPokestop.result === 1 && getPokestop.itemsAwarded.length !== 0) return true
+        // If we reached so far,  we have already collected 40 pokestops
+        if (step === 39) return true;
+        //  In other cases (results === 1 && itemsAwarded.length === 0), we continue
+        if (getPokestop.results === 1 && getPokestop.itemsAwarded.length === 0) return null
+
+        //  If the sync call didn't return anything, a problem ocurred
+        //  Let's throw an error so SRA will increase errorCount.
+        //  If the server continues to not respond, it will exit the SRA
+        if (!getPokestop) {
+          throw new Error('no-result')
         }
-      }
+      }, {
+        intervalMs: 350,
+        errorsToAbort: 10,
+      })()
 
-      nextReq()
+      if (sraResult) {
+        console.log('sequential algorithm succeed')
+      } else {
+        console.log('sequential algorithm failed')
+      }
     }
   },
   'bots.sniperPokemon'({ botId, latitude, longitude }) {
@@ -233,14 +222,18 @@ Meteor.methods({
     }
   },
   'bots.walk'({ botId, direction }) {
+    this.unblock()
+
     const userId = checkIsLoggedIn()
     const bot = validateBot(botId, userId)
-    const { angle, coords: { latitude, longitude } } = bot
+    const { token, angle, coords: { latitude, longitude } } = bot
     const dLat = Math.sin((angle + 90) / 180 * Math.PI) * 0.0005 * direction
     const dLng = Math.cos((angle + 90) / 180 * Math.PI) * 0.0005 * direction
 
     const newLatitude = latitude + dLat
     const newLongitude = longitude + dLng
+
+
     Bots.update(botId, {
       $set: {
         coords: {
@@ -250,10 +243,10 @@ Meteor.methods({
       },
     })
 
-    Meteor.call('bots.setPosition', {
-      botId,
-      latitude: newLatitude,
-      longitude: newLongitude,
+    botServiceSyncCall('setPosition', {
+      token,
+      latitude,
+      longitude,
     })
   },
   'bots.registerBot'({ email, password, nickname, coords, proxy }) {
@@ -472,7 +465,7 @@ Meteor.methods({
         latitude,
         longitude,
       })
-
+      console.log(getPokestop)
       return getPokestop
     } catch (error) {
       console.log(error)

@@ -29,15 +29,15 @@ const composer = (props, onData) => {
   if (selectedBot) {
     latitude = selectedBot.coords.latitude
     longitude = selectedBot.coords.longitude
+    console.log(latitude, longitude)
   }
 
-  console.log(latitude, longitude)
   const handlerEncounters = Meteor.subscribe('encounters', { onError })
   const handlerPokestops = Meteor.subscribe('pokestops', { latitude, longitude }, { onError })
   const handlerBots = Meteor.subscribe('bots', { onError })
 
 
-  if (handlerEncounters.ready() && handlerPokestops.ready() && handlerBots.ready()) {
+  if (handlerEncounters.ready() && handlerBots.ready()) {
     let currentEncounter = null
     let catchedEncounters = []
     let fleedEncounters = []

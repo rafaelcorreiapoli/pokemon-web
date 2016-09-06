@@ -16,6 +16,8 @@ const config = {
     "react/wrap-multilines": 0, // allow normal html syntax
     "jsx-a11y/img-has-alt": 0, // allow no alt attribute on images
     "global-require": 0,
+    "object-shorthand": ["error", "always", { "avoidQuotes": false }],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "no-param-reassign": 1, // allow to change input parameters
     "semi": 0,
     "no-case-declarations": 0,

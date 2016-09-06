@@ -22,11 +22,8 @@ const Loading = ({
 
 const userIsAuthenticated = UserAuthWrapper({
   wrapperDisplayName: 'UserIsAuthenticated',
-  authSelector: state => { console.log(state); return state.user },
-  authenticatingSelector: state => {
-    console.log(state.login.get('isMeteorUserFetched'))
-    return !state.login.get('isMeteorUserFetched')
-  },
+  authSelector: state => state.user,
+  authenticatingSelector: state => !state.login.get('isMeteorUserFetched'),
   LoadingComponent: Loading,
   redirectAction: newLoc => (dispatch, getState) => {
     //  se o usuário clicou no botão de logout, vou mandá-lo para a tela de login sem o redirect
