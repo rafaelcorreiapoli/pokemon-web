@@ -15,29 +15,7 @@ import itemsById from '@resources/items'
 import BotService from 'server/BotService'
 
 const BOT_STATUS_IDLE = 0;
-
-const getClosestPokestop = ({ latitude, longitude, maxDistance, minDistance }) => {
-  const $near = {
-    $geometry: {
-      type: 'Point',
-      coordinates: [longitude, latitude],
-    },
-  }
-  if (maxDistance) {
-    $near.$maxDistance = maxDistance
-  }
-  if (minDistance) {
-    $near.$minDistance = minDistance
-  }
-
-  return Pokestops.findOne({
-    loc: {
-      $near,
-    },
-  }, {
-    limit: 1,
-  })
-}
+const BOT_ANGLE_INCREMENT = 36;
 
 const validateBot = (botId, userId) => {
   check(botId, String)
@@ -62,7 +40,7 @@ Meteor.methods({
       longitude: botLongitude,
     } } = validateBot(botId, userId)
     const origin = { latitude: botLatitude, longitude: botLongitude }
-    const closestPokestop = getClosestPokestop(origin)
+    const closestPokestop = Pokestops.static.getClosestPokestop(origin)
 
     const { latitude, longitude } = closestPokestop
     const destination = { latitude, longitude }
@@ -113,7 +91,7 @@ Meteor.methods({
   'bots.removeSoftBan'({ botId }) {
     const userId = checkIsLoggedIn()
     const { token, coords: { latitude, longitude } } = validateBot(botId, userId)
-    const closestPokestop = getClosestPokestop({ latitude, longitude })
+    const closestPokestop = Pokestops.static.getClosestPokestop({ latitude, longitude })
     if (closestPokestop) {
       const { _id, latitude: pokestopLatitude, longitude: pokestopLongitude } = closestPokestop
       const sraResult = sequentialRecursiveAlgorithm((step, errors) => {
@@ -163,15 +141,21 @@ Meteor.methods({
     const userId = checkIsLoggedIn()
     const { token } = validateBot(botId, userId)
 
-    Meteor.call('bots.setPosition', {
-      botId,
+    const scan = botServiceSyncCall('setPosition', {
+      token,
       latitude,
       longitude,
     })
+    scan.encounters && Encounters.static.proccessEncounters(scan.encounters)
+    scan.pokestops && Pokestops.static.proccessPokestops(scan.pokestops)
+    scan.gyms && Gyms.static.proccessGyms(scan.gyms)
+
+    //  TODO: Start removeSoftBan algorithm.
   },
   'bots.run'({ botId }) {
     const userId = checkIsLoggedIn()
     validateBot(botId, userId)
+    //  Do we need to store currentEncounter on the server?
     Bots.update(botId, {
       $set: {
         currentEncounter: null,
@@ -181,45 +165,13 @@ Meteor.methods({
   'bots.selectBot'({ botId }) {
     const userId = checkIsLoggedIn()
     validateBot(botId, userId)
-    Bots.update({
-      _id: {
-        $ne: botId,
-      },
-      userId,
-    }, {
-      $set: {
-        selected: false,
-      },
-    }, {
-      multi: true,
-    })
-    Bots.update(botId, {
-      $set: {
-        selected: true,
-      },
-    })
+    Bots.static.select(userId, botId)
   },
   'bots.changeAngle'({ botId, direction }) {
     const userId = checkIsLoggedIn()
     validateBot(botId, userId)
-    const bot = Bots.findOne(botId)
-    let { angle } = bot
-    if (isNaN(angle)) angle = 0
-    let newAngle
 
-    if (direction === 1) {
-      const normalizedAngle = (angle - 360 / 36) % 360
-      newAngle = normalizedAngle < 0 ? 360 + normalizedAngle : normalizedAngle
-    } else if (direction === -1) {
-      newAngle = (angle + 360 / 36) % 360
-    }
-    if (angle !== newAngle) {
-      Bots.update(botId, {
-        $set: {
-          angle: newAngle,
-        },
-      })
-    }
+    Bots.static.changeAngle(botId, direction, BOT_ANGLE_INCREMENT)
   },
   'bots.walk'({ botId, direction }) {
     this.unblock()
@@ -347,45 +299,14 @@ Meteor.methods({
         token,
       })
       const {
-        level,
-        uniquePokedex,
-        items,
-        candies,
         eggs,
         pokemons,
+        ...profile,
       } = inventory
 
-      Bots.update(botId, {
-        $set: {
-          'pokemonGoProfile.level': level,
-          'pokemonGoProfile.uniquePokedex': uniquePokedex,
-          'pokemonGoProfile.items': items,
-          'pokemonGoProfile.candies': candies,
-        },
-      })
-      pokemons.forEach(pokemon => {
-        Pokemons.upsert({
-          _id: pokemon.pokemonIdNumber,
-        }, {
-          $set: {
-            _id: pokemon.pokemonIdNumber,
-            ...pokemon,
-            botId,
-          },
-        })
-      })
-
-      eggs.forEach(egg => {
-        Eggs.upsert({
-          _id: egg.eggIdNumber,
-        }, {
-          $set: {
-            _id: egg.eggIdNumber,
-            ...egg,
-            botId,
-          },
-        })
-      })
+      profile && Bots.static.setProfile(botId, profile)
+      pokemons && Pokemons.static.proccessPokemons(botId, pokemons)
+      eggs && Eggs.static.proccessEggs(botId, eggs)
     } catch (error) {
       throw new Meteor.Error(error.reason)
     }
@@ -481,14 +402,7 @@ Meteor.methods({
     const { token } = validateBot(botId, userId)
 
     //  TODO: Optimistic UI
-    Bots.update(botId, {
-      $set: {
-        coords: {
-          latitude,
-          longitude,
-        },
-      },
-    })
+    Bots.static.setPosition(botId, { latitude, longitude })
 
     try {
       const scan = botServiceSyncCall('setPosition', {
@@ -496,45 +410,9 @@ Meteor.methods({
         latitude,
         longitude,
       })
-
-      scan.encounters && scan.encounters.forEach(({ encounterIdNumber, ...encounter }) => {
-        Encounters.upsert({
-          _id: encounterIdNumber,
-        }, {
-          $set: {
-            _id: encounterIdNumber,
-            ...encounter,
-          },
-        })
-      })
-
-      scan.pokestops && scan.pokestops.forEach(({ pokestopId, ...pokestop }) => {
-        const loc = {
-          type: 'Point',
-          coordinates: [pokestop.longitude, pokestop.latitude],
-        }
-
-        Pokestops.upsert({
-          _id: pokestopId,
-        }, {
-          $set: {
-            _id: pokestopId,
-            loc,
-            ...pokestop,
-          },
-        })
-      })
-
-      scan.gyms && scan.gyms.forEach(({ gymId, ...gym }) => {
-        Gyms.upsert({
-          _id: gymId,
-        }, {
-          $set: {
-            _id: gymId,
-            ...gym,
-          },
-        })
-      })
+      scan.encounters && Encounters.static.proccessEncounters(scan.encounters)
+      scan.pokestops && Pokestops.static.proccessPokestops(scan.pokestops)
+      scan.gyms && Gyms.static.proccessGyms(scan.gyms)
     } catch (error) {
       throw new Meteor.Error(error.reason)
     }
